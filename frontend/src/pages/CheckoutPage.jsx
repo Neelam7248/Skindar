@@ -1,0 +1,190 @@
+// src/pages/CheckoutPage.js
+import { useContext, useState } from "react";
+import { CartContext } from "../components/customers/CartContext";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const CheckoutPage = () => {
+  const { cartItems, totalPrice, clearCart } = useContext(CartContext);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    postalCode: "",
+    address: "",
+    paymentMethod: "cod",
+  });
+  const [serviceCharge] = useState(200);
+  const [location, setLocation] = useState('');
+  const navigate = useNavigate();
+
+
+  // 🔍 Address search → Update location + postal code
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    // If user types address, auto-search after small delay
+   
+  };
+
+  const handleConfirmOrder = async(e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.phone || !formData.postalCode) {
+      alert("Please fill all required fields!");
+      return;
+    }
+
+    const orderDetails = {
+      customer: { ...formData },
+      items: cartItems,
+      subtotal: totalPrice,
+      serviceCharge,
+      grandTotal: totalPrice + serviceCharge,
+    };
+
+    console.log("Order Confirmed ✅", orderDetails);
+
+    if (formData.paymentMethod === "cod") {
+   try {
+  const res = await axios.post("http://localhost:5000/api/orders", orderDetails);
+  console.log("✅ Order saved:", res.data);
+  alert(`✅ Order placed!\nTotal: Rs. ${totalPrice + serviceCharge}\nPay Cash on Delivery.`);
+  clearCart();
+  navigate("/");
+} catch (error) {
+  console.error("❌ Order failed:", error);
+  alert("Something went wrong while placing your order!");
+}
+    } else {
+      alert("Online payment option coming soon!");
+    }
+  }
+  return (
+    <div className="container mt-4">
+      <h2 className="text-center text-primary mb-4">Checkout</h2>
+
+      {cartItems.length === 0 ? (
+        <p className="text-center text-muted">Your cart is empty</p>
+      ) : (
+        <div className="row">
+          {/* Cart Items */}
+          <div className="col-lg-6 mb-4" style={{ maxHeight: "500px", overflowY: "auto" }}>
+            {cartItems.map((item) => (
+              <div key={item._id} className="card mb-3 shadow-sm">
+                <img
+                  src={item.images[0]}
+                  className="card-img-top"
+                  alt={item.name}
+                  style={{ height: "200px", objectFit: "cover" }}
+                />
+                <div className="card-body">
+                  <h5 className="card-title text-primary">{item.name}</h5>
+                  <p className="text-success fw-semibold">Price: Rs. {item.price}</p>
+                  <p className="fw-semibold">Subtotal: Rs. {item.price * item.quantity}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Checkout Form */}
+          <div className="col-lg-6">
+            <form onSubmit={handleConfirmOrder} className="p-4 bg-light rounded shadow-sm">
+              <h5 className="text-primary mb-3">Your Details</h5>
+
+              <div className="mb-3">
+                <label className="form-label">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Phone Number</label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Postal Code</label>
+                <input
+                  type="text"
+                  name="postalCode"
+                  value={formData.postalCode}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="Auto-filled based on address"
+                  required
+                />
+              </div>
+
+              {/* Address input */}
+              <div className="mb-3">
+                <label className="form-label">Address</label>
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="Enter your full address"
+                />
+              </div>
+
+
+              {/* Payment Method */}
+              <h6 className="text-primary">Payment Method</h6>
+              <div className="mb-3 d-flex gap-3">
+                <div className="form-check">
+                  <input
+                    type="radio"
+                    className="form-check-input"
+                    name="paymentMethod"
+                    value="cod"
+                    checked={formData.paymentMethod === "cod"}
+                    onChange={handleChange}
+                  />
+                  <label className="form-check-label">Cash on Delivery</label>
+                </div>
+                <div className="form-check">
+                  <input
+                    type="radio"
+                    className="form-check-input"
+                    name="paymentMethod"
+                    value="online"
+                    checked={formData.paymentMethod === "online"}
+                    onChange={handleChange}
+                  />
+                  <label className="form-check-label">Online Payment</label>
+                </div>
+              </div>
+
+              {/* Order Summary */}
+              <div className="mb-3 text-end fw-semibold text-primary">
+                Subtotal: Rs. {totalPrice} <br />
+                Service Charges: Rs. {serviceCharge} <br />
+                Grand Total: Rs. {totalPrice + serviceCharge}
+              </div>
+
+              <button type="submit" className="btn btn-primary w-100">
+                Confirm Order
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CheckoutPage;
