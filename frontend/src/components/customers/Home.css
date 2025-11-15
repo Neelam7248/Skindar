@@ -47,11 +47,28 @@
   color: #fff;
 }
 
+/* Default for desktop */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 20px;
   padding: 0 20px;
+}
+
+/* For tablets / small screens */
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
+/* For mobile phones */
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;   /* smaller gap for small screens */
+    padding: 0 10px;
+  }
 }
 
 .product-card {
@@ -74,7 +91,7 @@
   margin-top: 10px;
   background: #0077b6;
   color: #fff;
-  padding: 8px 15px;
+  padding: 6px 10px;
   border-radius: 5px;
   text-decoration: none;
 }

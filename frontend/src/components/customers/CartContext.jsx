@@ -1,11 +1,14 @@
 // src/context/CartContext.js
 import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { isLoggedIn, getToken } from "../../utils/auth";   // ← IMPORT HERE
+import axios from "axios";
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-const navigate=useNavigate();
+  const navigate = useNavigate();
+const [orders, setOrders] = useState([]);
   // ➕ Add to Cart
   const addToCart = (product) => {
     setCartItems((prev) => {
@@ -21,24 +24,24 @@ const navigate=useNavigate();
       }
     });
   };
-const increaseQty = (id) => {
-  setCartItems((prev) =>
-    prev.map((item) =>
-      item._id === id ? { ...item, quantity: item.quantity + 1 } : item
-    )
-  );
-};
 
-const decreaseQty = (id) => {
-  setCartItems((prev) =>
-    prev
-      .map((item) =>
+  const increaseQty = (id) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item._id === id ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  const decreaseQty = (id) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
         item._id === id
-          ? { ...item, quantity: Math.max(1, item.quantity - 1) } // quantity can’t go below 1
+          ? { ...item, quantity: Math.max(1, item.quantity - 1) }
           : item
       )
-  );
-};
+    );
+  };
 
   // ➖ Remove from Cart
   const removeFromCart = (id) => {
@@ -55,25 +58,52 @@ const decreaseQty = (id) => {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-const buyNowAll = () => {
-  if (cartItems.length === 0) {
-    alert("Your cart is empty!");
-    return;
-  }
 
-  // Example: redirect to checkout page
-  console.log("Proceeding to checkout with items:", cartItems);
-
-  // You can navigate to a checkout route (React Router useNavigate)
-  // Example:
-  // navigate("/checkout", { state: { items: cartItems } });
-   navigate("/checkout"); // ✅ Redirect to CheckoutPage
   
-};
+const fetchOrders = async () => {
+    try {
+      const token = getToken();
+      if (!token) return; // user not logged in
+
+      const res = await axios.get("http://localhost:5000/api/orders", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Fetched orders:", res.data);
+      setOrders(res.data);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
+  
+  const buyNowAll = () => {
+if (cartItems.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    } else if (!isLoggedIn()) {
+     setTimeout(() => navigate("/signin"), 10);  // Correct route// ← user logged in na ho to signup page
+      return;
+    } 
+    navigate("/checkout");
+   };
+
 
   return (
     <CartContext.Provider
-      value={{ cartItems,buyNowAll,increaseQty, decreaseQty,addToCart, removeFromCart, clearCart, totalPrice }}
+      value={{
+        cartItems,
+       isLoggedIn,
+       fetchOrders,
+        orders,
+        buyNowAll,
+        increaseQty,
+        decreaseQty,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        totalPrice,
+      }}
     >
       {children}
     </CartContext.Provider>

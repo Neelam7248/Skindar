@@ -26,7 +26,7 @@ const navigate=useNavigate();
       console.log("frontend received data", res.data);
       
 if(formData.userType==='customer'){
-    navigate('/productpage');
+    navigate('/cartpage');
 }
 setFormData({
         name: "",
@@ -108,6 +108,8 @@ setFormData({
           </select>
           <button type="submit">Register</button>
         </form>
+        <p>If you are already registered then pleasee signin</p>
+<button onClick={() => navigate("/signin")}>Signin</button>
       </div>
     </div>
   );

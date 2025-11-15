@@ -2,6 +2,7 @@
 import React, { useState, useContext } from "react";
 import { Link ,useNavigate} from "react-router-dom";
 import "./Navbar.css";
+
 import {
   FaHome, FaUser, FaShoppingBag, FaShoppingCart,
   FaSignInAlt, FaInfoCircle, FaProductHunt
@@ -48,7 +49,7 @@ const handleCategoryClick = (category) => {
           )}
         </li>
 
-        <li><Link to="/cart" onClick={() => setIsOpen(false)}><FaShoppingCart /> Cart</Link></li>
+        <li><Link to="/cartpage" onClick={() => setIsOpen(false)}><FaShoppingCart /> Cart</Link></li>
         <li><Link to="/orders" onClick={() => setIsOpen(false)}><FaShoppingBag /> Orders</Link></li>
         <li><Link to="/profile" onClick={() => setIsOpen(false)}><FaUser /> Profile</Link></li>
         <li><Link to="/signin" onClick={() => setIsOpen(false)}><FaSignInAlt /> Signin</Link></li>

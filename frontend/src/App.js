@@ -11,6 +11,8 @@ import ProductDetail from './components/customers/ProductDetailPage';
 import SelectedCategory from './components/customers/SelectedCategory';
 import ProductCard from './components/customers/ProductCard';
 import CheckoutPage from './pages/CheckoutPage';
+import CartPage from './components/customers/CartPage';
+import OrderHistory from './components/customers/OrderHistory';
 function App() {
   return (
   <>
@@ -27,6 +29,8 @@ function App() {
 <Route path="/selectedCategory"element={<SelectedCategory/>}/>
 <Route path="/productcard" element={<ProductCard />} /> 
  <Route path="/checkout" element={<CheckoutPage />} />
+ <Route path="orders" element={<OrderHistory />} />
+ <Route path="/cartpage" element={<CartPage />} />
         {/* Admin-only Protected Route */}
         <Route
           path="/adminportal"

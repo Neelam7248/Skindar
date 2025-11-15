@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
 import { CartContext } from "./CartContext";
 import "./CartPage.css"; // Import the CSS file
+import { useNavigate } from "react-router-dom";
 
 function CartPage() {
-  const {buyNowAll, cartItems, increaseQty, decreaseQty,removeFromCart, totalPrice, clearCart } = useContext(CartContext);
-
+  const {buyNowAll,isLoggedIn, cartItems, increaseQty, decreaseQty,removeFromCart, totalPrice, clearCart } = useContext(CartContext);
+const navigate = useNavigate(); 
   return (
     <div className="cart-page">
       <h2>Your Cart</h2>
@@ -72,11 +73,23 @@ Remove
   Clear Cart
 </button>
 
-<button className="buy-btn" onClick={() => {
-  buyNowAll();
-}}>
-  Buy Now All 
+<button
+  className="buy-btn"
+  onClick={() => {
+    console.log("TOKEN:", localStorage.getItem("token"));
+    console.log("isLoggedIn():", isLoggedIn());
+
+    if (!isLoggedIn()) {
+      navigate("/signin");  // ← user login nahi, to register page per bhej do
+      return;
+    }
+
+    buyNowAll(); // user logged in ho to previous logic chale
+  }}
+>
+  Buy Now All
 </button>
+
           </div>
         </>
       )}

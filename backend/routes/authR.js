@@ -42,7 +42,7 @@ router.post('/signup', async (req, res) => {
         const token = jwt.sign(
             { userId: newUser._id, userType: userType },
             JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '30m' }
         );
 
         // Send response (without password)
@@ -89,7 +89,7 @@ router.post('/signin', async (req, res) => {
     const token = jwt.sign(
       { userId: existingUser._id },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '30m' }
     );
 
     const user = {
