@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const User = require('../models/User');
-
+const auth = require('../middleware/auth');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 router.post('/signup', async (req, res) => {
@@ -40,16 +40,16 @@ router.post('/signup', async (req, res) => {
 
         // Generate JWT (include userType from form)
         const token = jwt.sign(
-            { userId: newUser._id, userType: userType },
+            { userId: newUser._id, userType: userType ,email: newUser.email},
             JWT_SECRET,
-            { expiresIn: '30m' }
+            { expiresIn: '2h' }
         );
 
         // Send response (without password)
         res.status(201).json({
             message: "User created successfully",
             user: {
-                _id: newUser._id,
+              userId: newUser._id,
                 name: newUser.name,
                 email: newUser.email,
                 phone: newUser.phone,
@@ -87,9 +87,9 @@ router.post('/signin', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { userId: existingUser._id },
-      process.env.JWT_SECRET,
-      { expiresIn: '30m' }
+      { userId: existingUser._id, email: existingUser.email ,userType: existingUser.userType},
+      JWT_SECRET,
+      { expiresIn: '2h' }
     );
 
     const user = {
@@ -105,5 +105,23 @@ router.post('/signin', async (req, res) => {
   }
 });
 
+// for fetching profile 
+router.get('/profile', auth, async (req, res) => {
+  try {
+    const userId = req.user.id; // auth middleware se aya hua user id
+
+    const user = await User.findById(userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+
+  } catch (err) {
+    console.error("Error fetching profile:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
 
 module.exports = router;

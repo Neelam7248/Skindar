@@ -5,6 +5,7 @@ const orderSchema = new mongoose.Schema(
   {
     customer: {
       name: String,
+      email:String,
       phone: String,
       postalCode: String,
       address: String,
@@ -21,6 +22,11 @@ const orderSchema = new mongoose.Schema(
     subtotal: Number,
     serviceCharge: Number,
     grandTotal: Number,
+    status: {
+      type: String,
+      enum: ["Pending", "Processing", "Shipped", "Delivered"],
+      default: "Pending", // new orders default Pending
+    },
   },
   { timestamps: true }
 );
