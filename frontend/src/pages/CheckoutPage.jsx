@@ -1,34 +1,48 @@
 // src/pages/CheckoutPage.js
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { CartContext } from "../components/customers/CartContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { getToken } from "../utils/auth";
 
 const CheckoutPage = () => {
-  const { cartItems, totalPrice, clearCart } = useContext(CartContext);
+  const navigate = useNavigate();
+  const { cartItems, totalPrice, profile, fetchProfile, clearCart } = useContext(CartContext);
+
   const [formData, setFormData] = useState({
     name: "",
+    email: "",
     phone: "",
     postalCode: "",
     address: "",
     paymentMethod: "cod",
   });
+
   const [serviceCharge] = useState(200);
-  const [location, setLocation] = useState('');
-  const navigate = useNavigate();
 
+  // Fetch profile on page load
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
-  // 🔍 Address search → Update location + postal code
+  // Update formData when profile is fetched
+  useEffect(() => {
+    if (profile) {
+      setFormData((prev) => ({
+        ...prev,
+        name: profile.name || "",
+        email: profile.email || "",
+      }));
+    }
+  }, [profile]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-
-    // If user types address, auto-search after small delay
-   
   };
 
-  const handleConfirmOrder = async(e) => {
+  const handleConfirmOrder = async (e) => {
     e.preventDefault();
+
     if (!formData.name || !formData.phone || !formData.postalCode) {
       alert("Please fill all required fields!");
       return;
@@ -42,23 +56,35 @@ const CheckoutPage = () => {
       grandTotal: totalPrice + serviceCharge,
     };
 
-    console.log("Order Confirmed ✅", orderDetails);
-
     if (formData.paymentMethod === "cod") {
-   try {
-  const res = await axios.post("http://localhost:5000/api/orders", orderDetails);
-  console.log("✅ Order saved:", res.data);
-  alert(`✅ Order placed!\nTotal: Rs. ${totalPrice + serviceCharge}\nPay Cash on Delivery.`);
-  clearCart();
-  navigate("/");
-} catch (error) {
-  console.error("❌ Order failed:", error);
-  alert("Something went wrong while placing your order!");
-}
+      try {
+        const token = getToken();
+        if (!token) {
+          alert("Please login to place your order!");
+          return;
+        }
+
+        const res = await axios.post(
+          "http://localhost:5000/api/orders",
+          orderDetails,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        console.log("Order placed successfully:", res.data);
+        alert("Order placed successfully!");
+        clearCart();
+        navigate("/");
+      } catch (error) {
+        console.error("❌ Order failed:", error);
+        alert("Something went wrong while placing your order!");
+      }
     } else {
       alert("Online payment option coming soon!");
     }
-  }
+  };
+
   return (
     <div className="container mt-4">
       <h2 className="text-center text-primary mb-4">Checkout</h2>
@@ -99,7 +125,19 @@ const CheckoutPage = () => {
                   value={formData.name}
                   onChange={handleChange}
                   className="form-control"
-                  required
+                  readOnly
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="form-control"
+                  readOnly
                 />
               </div>
 
@@ -128,7 +166,6 @@ const CheckoutPage = () => {
                 />
               </div>
 
-              {/* Address input */}
               <div className="mb-3">
                 <label className="form-label">Address</label>
                 <input
@@ -140,7 +177,6 @@ const CheckoutPage = () => {
                   placeholder="Enter your full address"
                 />
               </div>
-
 
               {/* Payment Method */}
               <h6 className="text-primary">Payment Method</h6>

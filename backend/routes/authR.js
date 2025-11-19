@@ -123,5 +123,83 @@ router.get('/profile', auth, async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+router.get('/users', auth, async (req, res) => {
+  try {
+    if (req.user.userType !== 'admin') {
+  return res.status(403).json({ message: "Access denied" });
+}
+    const users = await User.find({userType :"customer"  }).select("-password"); // sab users
+
+    res.status(200).json({ users }); // object me wrap kiya
+  } catch (err) {
+    console.error("Error fetching users:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+router.get("/users/search", auth,async (req, res) => {
+  try {
+    const query = req.query.query; // <-- this reads ?query=abc
+
+    const customers = await User.find({
+      userType:'customer',
+
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { email: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    res.status(200).json({message:"search success",customers});
+  } catch (error) {
+    res.status(500).json({ message: "Search failed", error });
+  }
+});
+// PUT /api/admin/users/:id/soft-delete
+router.put("/users/:id/soft-delete", auth, async (req, res) => {
+  try {
+
+    // Only admin allowed
+    if (req.user.userType !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const userId = req.params.id;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { isActive: false },          // <- Soft delete
+      { new: true }
+    ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Customer soft-deleted successfully",
+      user
+    });
+
+  } catch (error) {
+    console.error("Soft delete error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+router.put("/users/:id/restore", auth, async (req, res) => {
+  try {
+    if (req.user.userType !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    await User.findByIdAndUpdate(req.params.id, { isActive: true });
+
+    res.status(200).json({ message: "Customer restored successfully" });
+
+  } catch (error) {
+    res.status(500).json({ message: "Restore failed", error });
+  }
+});
 
 module.exports = router;

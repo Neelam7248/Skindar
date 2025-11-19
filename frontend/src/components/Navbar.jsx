@@ -2,7 +2,7 @@
 import React, { useState, useContext } from "react";
 import { Link ,useNavigate} from "react-router-dom";
 import "./Navbar.css";
-
+import { CartContext} from "./customers/CartContext"; // ✅ Cart context
 import {
   FaHome, FaUser, FaShoppingBag, FaShoppingCart,
   FaSignInAlt, FaInfoCircle, FaProductHunt
@@ -14,7 +14,10 @@ function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 const navigate=useNavigate();
   const { handleCategorySelect} = useContext(ProductContext); // ✅ from context
-const handleCategoryClick = (category) => {
+
+const { logOut} = useContext(CartContext); // ✅ from context
+
+  const handleCategoryClick = (category) => {
   handleCategorySelect(category); // fetch products by category
   setIsDropdownOpen(false);      // close dropdown
   navigate("/selectedcategory");      // go to product page
@@ -54,6 +57,15 @@ const handleCategoryClick = (category) => {
         <li><Link to="/profile" onClick={() => setIsOpen(false)}><FaUser /> Profile</Link></li>
         <li><Link to="/signin" onClick={() => setIsOpen(false)}><FaSignInAlt /> Signin</Link></li>
         <li><Link to="/register" onClick={() => setIsOpen(false)}><FaInfoCircle /> Register</Link></li>
+       <li>
+          <button 
+            onClick={() => logOut()} 
+            className="btn btn-link p-0 m-0"
+            style={{ color: "white", textDecoration: "none" }}
+          >
+            <FaInfoCircle /> Logout
+          </button>
+        </li>
       </ul>
     </nav>
   );

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ProductManagement from "../components/admin/ProductManagement/ProductManagement";
-//import OrderManagement from "./OrderManagement";
-//import CustomerManagement from "./CustomerManagement";
+import OrderManagement from "../components/admin/OrderManagement/OrderManagement";
+import CustomerManagement from "../components/admin/CustomerManagement/CustomerManagement";
 //import AnalyticsDashboard from "./AnalyticsDashboard";
 import {getToken,logout } from "../utils/auth";
 
@@ -17,10 +17,10 @@ function AdminPortal() {
     switch (activeTab) {
       case "products":
         return <ProductManagement />;
-      // "orders":
-        //return <OrderManagement />;
-      // "customers":
-//return <CustomerManagement />;
+       case "orders":
+      return <OrderManagement />;
+      case "customers":
+return <CustomerManagement />;
 //case "analytics":
 //return <AnalyticsDashboard />;
 //default:

@@ -27,14 +27,23 @@ address:{
     required:false,
 
 },
-userType: { type: String, 
-    enum: ['admin', 'customer'],
-     default: 'customer' },
-createdAt:{
-    type:Date,
-    default:Date.now,
+userType: { 
+  type: String, 
+  enum: ['admin', 'customer'],
+  default: 'customer' 
+},
 
+isActive: {
+  type: Boolean,
+  enum:['Active', 'Deleted'],
+  default: 'Active '  // <-- Soft delete ke liye default TRUE hoga
+},
+
+createdAt: {
+  type: Date,
+  default: Date.now
 }
+
 
 })
 module.exports=mongoose.model('User',UserSchema);

@@ -1,12 +1,15 @@
 // src/context/CartContext.js
 import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { isLoggedIn, getToken } from "../../utils/auth";   // ← IMPORT HERE
+import { isLoggedIn, getToken,logout } from "../../utils/auth";   // ← IMPORT HERE
 import axios from "axios";
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+   const [profile, setProfile] = useState(null); // ✅ Profile state
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileError, setProfileError] = useState("");
   const navigate = useNavigate();
 const [orders, setOrders] = useState([]);
   // ➕ Add to Cart
@@ -88,10 +91,57 @@ if (cartItems.length === 0) {
     navigate("/checkout");
    };
 
+// 🧑‍💼 Fetch User Profile
+  const fetchProfile = async () => {
+    setProfileLoading(true);
+    setProfileError("");
+
+    try {
+      if (!isLoggedIn()) {
+        setProfileError("User not logged in");
+        setProfileLoading(false);
+        return;
+      }
+
+      const token =getToken();
+      if (!token) {
+        setProfileError("Token not found");
+        setProfileLoading(false);
+        return;
+      }
+      const res = await axios.get("http://localhost:5000/api/auth/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setProfile(res.data);
+    } catch (err) {
+      console.error(err);
+      setProfileError(err.response?.data?.message || "Failed to fetch profile");
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+const logOut = () => {
+    // 1️⃣ Remove token
+    logout() ;
+
+    // 2️⃣ Clear cart
+    clearCart();
+
+    // 3️⃣ Redirect to login
+    navigate("/signin", { replace: true });
+  };
 
   return (
     <CartContext.Provider
       value={{
+       fetchProfile,
+       profile,
+       logOut,
+       profileLoading,
+       profileError,
         cartItems,
        isLoggedIn,
        fetchOrders,

@@ -1,56 +1,92 @@
-/* OrderHistory.css */
+/* orderhistory.css */
 
-.order-history {
-  max-width: 900px;
-  margin: 40px auto;
+.order-history-container {
+  max-width: 1000px;
+  margin: 20px auto;
   padding: 20px;
-  font-family: "Poppins", sans-serif;
-  color: #333;
-}
-
-.order-history h2 {
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 28px;
-  color: #0077b6;
+  font-family: 'Poppins', sans-serif;
 }
 
 .order-card {
-  background: #fff;
+  border: 1px solid #ddd;
   border-radius: 10px;
-  padding: 20px;
+  padding: 15px;
   margin-bottom: 20px;
+  background: #0077b6;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: 0.3s;
+color:#fff
 }
 
-.order-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.order-card h3 {
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
   margin-bottom: 10px;
-  font-size: 20px;
-  color: #0077b6;
 }
 
-.order-card p {
+.order-header div {
   margin: 5px 0;
-  font-size: 16px;
 }
 
-.order-card h4 {
-  margin-top: 15px;
-  margin-bottom: 8px;
-  font-size: 18px;
-  color: #333;
+.order-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
 }
 
+.order-items-table th,
+.order-items-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.order-items-table th {
+  background-color: #0077b6;
+  color: #fff;
+}
+
+.order-summary {
+  text-align: right;
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* Responsive: Tablets / small screens */
 @media (max-width: 768px) {
-  .order-history {
+  .order-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .order-items-table th,
+  .order-items-table td {
+    font-size: 13px;
+    padding: 6px;
+  }
+}
+
+/* Responsive: Mobile phones */
+@media (max-width: 480px) {
+  .order-card {
     padding: 10px;
   }
-  .order-card {
-    padding: 15px;
+
+  .order-items-table {
+    display: block;
+    overflow-x: auto;
+    font-size: 12px;
+  }
+
+  .order-items-table th,
+  .order-items-table td {
+    padding: 5px;
+    white-space: nowrap;
+  }
+
+  .order-summary {
+    font-size: 14px;
   }
 }

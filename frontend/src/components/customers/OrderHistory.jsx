@@ -16,12 +16,13 @@ const OrderHistory = () => {
         <p>No orders found.</p>
       ) : (
         orders.map((order) => (
-          <div key={order._id} className="order-card">
+          <div key={order._id} className="order-card" >
             <h3>Order ID: {order._id}</h3>
-            <p><strong>Name:</strong> {order.customer.name}</p>
+            <p ><strong>Name:</strong> {order.customer.name}</p>
             <p><strong>Phone:</strong> {order.customer.phone}</p>
             <p><strong>Address:</strong> {order.customer.address}</p>
-            <p><strong>Payment:</strong> {order.customer.paymentMethod}</p>
+            <p><strong>Payment:CashOndelivery(COD)/Online:</strong> {order.customer.paymentMethod}</p>
+            <p><strong>Status:</strong>{order.status}</p>
             <h4>Items:</h4>
             {order.items.map((item, idx) => (
             <>

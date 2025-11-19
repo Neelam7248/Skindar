@@ -60,9 +60,10 @@ router.put("/:orderId/status", auth,  async (req, res) => {
       return res.status(400).json({ message: "Status is required" });
     }
 
+    // Update status + updatedAt timestamp
     const order = await Order.findByIdAndUpdate(
       orderId,
-      { status },
+      { status, updatedAt: new Date() }, // <-- yahan add kiya
       { new: true }
     );
 
@@ -79,5 +80,6 @@ router.put("/:orderId/status", auth,  async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 module.exports=router;
