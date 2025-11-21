@@ -15,7 +15,7 @@ app.use('/api/auth',require('./routes/authR'));
 //manageProducts admin
 app.use('/api/products',require('./routes/manageProducts'));
 app.use('/api/orders', require('./routes/orderR'));
-
+app.use('/api/admin',require('./routes/adminR'));
 const PORT=process.env.PORT||5000;
 const DATABASE_URL=process.env.DATABASE_URL;
 

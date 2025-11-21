@@ -3,7 +3,7 @@ import ProductManagement from "../components/admin/ProductManagement/ProductMana
 import OrderManagement from "../components/admin/OrderManagement/OrderManagement";
 import CustomerManagement from "../components/admin/CustomerManagement/CustomerManagement";
 //import AnalyticsDashboard from "./AnalyticsDashboard";
-import {getToken,logout } from "../utils/auth";
+import { getToken, logout } from "../utils/auth";
 
 function AdminPortal() {
   const [activeTab, setActiveTab] = useState("products");
@@ -17,13 +17,13 @@ function AdminPortal() {
     switch (activeTab) {
       case "products":
         return <ProductManagement />;
-       case "orders":
-      return <OrderManagement />;
+      case "orders":
+        return <OrderManagement />;
       case "customers":
-return <CustomerManagement />;
-//case "analytics":
-//return <AnalyticsDashboard />;
-//default:
+        return <CustomerManagement />;
+      // case "analytics":
+      //   return <AnalyticsDashboard />;
+      default:
         return <ProductManagement />;
     }
   };
@@ -62,6 +62,36 @@ return <CustomerManagement />;
       </ul>
 
       <div style={styles.content}>{renderContent()}</div>
+
+      {/* Media Queries */}
+      <style>{`
+        @media (max-width: 768px) {
+          ul {
+            flex-direction: column;
+            align-items: center;
+          }
+          li {
+            padding: 8px 12px;
+            margin-bottom: 5px;
+          }
+          div[style*="width: 80%"] {
+            width: 95% !important;
+            padding: 15px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          h2 {
+            font-size: 20px;
+          }
+          li {
+            font-size: 14px;
+            padding: 6px 10px;
+          }
+          div[style*="width: 80%"] {
+            padding: 10px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
@@ -87,6 +117,7 @@ const styles = {
     padding: "10px 0",
     background: "#0077b6",
     borderRadius: "8px",
+    flexWrap: "wrap",
   },
   tab: {
     color: "#fff",

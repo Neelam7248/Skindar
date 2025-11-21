@@ -19,7 +19,7 @@ function Home() {
     <div className="home-container">
       {/* Hero Section */}
       <section className="hero">
-        <h1>Welcome to GentsShop</h1>
+        <h1>Welcome to Denim Studio</h1>
         <p>Discover the latest trends in men’s fashion</p>
      
       </section>
@@ -41,7 +41,9 @@ function Home() {
 <img src={p.images[0]} alt={p.name} />
 
                 <h3>{p.name}</h3>
-                <p>Rs. {p.price}</p>
+                <p>{p.description}</p>
+<h2 class="sale-text">SALE IS NOW OPEN!</h2>
+               <p>Sale Price: <del style={{color:"red"}}>Rs 10000</del> <ins style={{color:"green"}}>now in Only<i>  RS {p.price}</i> </ins></p>             
                 <Link to={`/productpage/${p._id}`} className="btn-view">View</Link>
 <button onClick={() => addToCart(p)}>Add to Cart</button>
     
@@ -57,8 +59,8 @@ function Home() {
      
      <CartPage/>
       {/* Footer */}
-      <footer>
-        <p>© 2025 GentsShop | All Rights Reserved</p>
+      <footer><address>Address:Shop no 1 
+United plaza nearest levise factory outlet ..</address>
       </footer>
     </div>
   );

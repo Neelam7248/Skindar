@@ -157,8 +157,6 @@ router.get("/users/search", auth,async (req, res) => {
 // PUT /api/admin/users/:id/soft-delete
 router.put("/users/:id/soft-delete", auth, async (req, res) => {
   try {
-
-    // Only admin allowed
     if (req.user.userType !== "admin") {
       return res.status(403).json({ message: "Access denied" });
     }
@@ -167,7 +165,7 @@ router.put("/users/:id/soft-delete", auth, async (req, res) => {
 
     const user = await User.findByIdAndUpdate(
       userId,
-      { isActive: false },          // <- Soft delete
+      { isActive: false },
       { new: true }
     ).select("-password");
 
@@ -181,8 +179,7 @@ router.put("/users/:id/soft-delete", auth, async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Soft delete error:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -193,12 +190,51 @@ router.put("/users/:id/restore", auth, async (req, res) => {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    await User.findByIdAndUpdate(req.params.id, { isActive: true });
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isActive: true },
+      { new: true }
+    ).select("-password");
 
-    res.status(200).json({ message: "Customer restored successfully" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User restored successfully", user });
 
   } catch (error) {
-    res.status(500).json({ message: "Restore failed", error });
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+router.put("/UPprofile", auth, async (req, res) => {
+  try {
+    const userId = req.user.id; // From auth middleware
+    const { name, phone, address } = req.body;
+
+    // Find the user
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Update fields if provided
+    if (name) user.name = name;
+    if (phone) user.phone = phone;
+    if (address) user.address = address;
+
+    await user.save();
+
+    res.json({
+      message: "Profile updated successfully",
+      user: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        userType: user.userType,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 

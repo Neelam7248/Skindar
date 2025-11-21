@@ -1,58 +1,74 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./ProductCard.css"; // optional, can create CSS for styling
-import CartPage from "./CartPage";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+import "./ProductCard.css";
 
 const ProductCard = React.memo(({ product, addToCart }) => {
-if (!product) return null;
+  if (!product) return null;
+
+  // OLD PRICE LOGIC (agar discount ho)
+  const oldPrice = product.oldPrice || product.price + 1000;
+
   return (
     <div className="product-card">
-      <Link to={`/productcard`}>
-<div className="product-gallery">
-        {product.images && product.images.length > 0 ? (
-          product.images.map((img, index) => (
+
+      {/* ================= IMAGE SECTION ================= */}
+      <Link to={`/productpage/${product._id}`} className="image-link">
+        <div className="product-image-wrapper">
+
+          <Zoom zoomMargin={40}>
             <img
-              key={index}
-              src={img}
-              alt={`${product.name} ${index + 1}`}
+              src={product.images?.[0] || "/placeholder.png"}
+              alt={product.name}
               className="product-image"
             />
-          ))
-        ) : (
-          <img
-            src="/placeholder.png"
-            alt="No Image"
-            className="product-image"
-          />
-        )}
-      </div>
+          </Zoom>
+
+          {/* SALE TAG (dynamic, attractive) */}
+          {oldPrice > product.price && (
+            <span className="sale-tag">
+              🔥 Sale — {Math.round(((oldPrice - product.price) / oldPrice) * 100)}% Off
+            </span>
+          )}
+        </div>
       </Link>
 
-      <h4>Product:{product.name}</h4>
-<li className="product-card" style={{backgroundColor:"powderblue"}}>Images, description, price, sizes, colors
-  <div className="product-info">
-    <span>
-      <strong>Size:</strong> {product.size} <br />
-      <strong>Rs:</strong> {product.price} <br />
-      <strong>Stock:</strong> {product.stock} <br />
-      <strong>Color:</strong> {product.color}
-    </span>
-  </div>
+      {/* ================= PRODUCT DETAILS ================= */}
+      <div className="product-details">
+        <h3 className="product-title">{product.name}</h3>
 
-  {addToCart && (
-<>
-<button onClick={() => addToCart(product)} className="add-btn">
-      Add to Cart
-    </button>
-    
- </>)}
-</li>
+        <p className="price-line">
+          <span className="old-price">Rs {oldPrice}</span>
+          <span className="new-price">Rs {product.price}</span>
+        </p>
 
-   </div>
-   
+        <p className="info-line">
+          Size: <b>{product.size}</b>
+        </p>
+        <p className="info-line">
+          Color: <b>{product.color}</b>
+        </p>
+      </div>
+
+      {/* ================= ACTION BUTTONS ================= */}
+      <div className="buttons">
+
+        {/* View Button */}
+        <Link to={`/productpage/${product._id}`} className="btn-view">
+          View Details
+        </Link>
+
+        {/* Add to Cart */}
+        {addToCart && (
+          <button onClick={() => addToCart(product)} className="btn-cart">
+            Add to Cart
+          </button>
+        )}
+
+      </div>
+    </div>
   );
-  <CartPage/>
-  
 });
 
 export default ProductCard;

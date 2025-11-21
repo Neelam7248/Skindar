@@ -35,9 +35,9 @@ userType: {
 
 isActive: {
   type: Boolean,
-  enum:['Active', 'Deleted'],
-  default: 'Active '  // <-- Soft delete ke liye default TRUE hoga
-},
+  default: true  // true = Active, false = Deleted
+}
+,
 
 createdAt: {
   type: Date,

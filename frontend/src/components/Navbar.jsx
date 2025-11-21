@@ -26,7 +26,10 @@ const { logOut} = useContext(CartContext); // ✅ from context
   return (
     <nav className="navbar">
       <div className="logo">
-        <Link to="/"><FaShoppingBag /> GentsShop</Link>
+        <Link to="/"><FaShoppingBag />Denim studio 
+</Link>
+ 
+ 
       </div>
 
       <div className="hamburger" onClick={() => setIsOpen(!isOpen)}>

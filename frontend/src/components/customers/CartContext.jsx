@@ -10,6 +10,8 @@ export const CartProvider = ({ children }) => {
    const [profile, setProfile] = useState(null); // ✅ Profile state
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState("");
+  const [adminContact, setAdminContact] = useState("");
+  
   const navigate = useNavigate();
 const [orders, setOrders] = useState([]);
   // ➕ Add to Cart
@@ -133,6 +135,58 @@ const logOut = () => {
     // 3️⃣ Redirect to login
     navigate("/signin", { replace: true });
   };
+// Fetch Admin Contact Info (example of another utility function)
+  const fetchAdminContact = async () => {
+  try {
+    const res = await axios.get("http://localhost:5000/api/admin/contact");
+    setAdminContact(res.data);
+  } catch (err) {
+    console.error("Failed to fetch admin contact", err);
+  }
+};
+
+  // 🧑‍💼 Update User Profile
+const updateProfile = async (updatedData) => {
+  setProfileLoading(true);
+  setProfileError("");
+
+  try {
+    if (!isLoggedIn()) {
+      setProfileError("User not logged in");
+      setProfileLoading(false);
+      return;
+    }
+
+    const token = getToken();
+    if (!token) {
+      setProfileError("Token not found");
+      setProfileLoading(false);
+      return;
+    }
+
+    // Send PUT request to update profile
+    const res = await axios.put(
+      "http://localhost:5000/api/auth/UPprofile", 
+      updatedData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+console.log("Profile updated:", res.data);
+    // Update local state with the new profile
+    setProfile(res.data.user);
+
+  } catch (err) {
+    console.error(err);
+    setProfileError(err.response?.data?.message || "Failed to update profile");
+  } finally {
+    setProfileLoading(false);
+  }
+};
+
+    
 
   return (
     <CartContext.Provider
@@ -141,6 +195,8 @@ const logOut = () => {
        profile,
        logOut,
        profileLoading,
+       
+        updateProfile,
        profileError,
         cartItems,
        isLoggedIn,
@@ -153,7 +209,9 @@ const logOut = () => {
         removeFromCart,
         clearCart,
         totalPrice,
-      }}
+        fetchAdminContact,
+        adminContact,
+setAdminContact,      }}
     >
       {children}
     </CartContext.Provider>

@@ -55,22 +55,30 @@ console.log("frontend receives cusomer data",res.data);
   // 3. Delete Customer
   // ============================
   const deleteCustomer = async (customerId) => {
-    if (!window.confirm("Are you sure you want to delete this customer?")) return;
+  if (!window.confirm("Are you sure you want to delete this customer?")) return;
 
-    try {
-      await axios.put(
-        `http://localhost:5000/api/admin/users/${customerId}`,
-        { headers: { Authorization: `Bearer ${getToken()}` } }
-      );
-      setCustomers((prev) => prev.filter((c) => c._id !== customerId));
-    } catch (error) {
-      console.error("Error deleting customer:", error);
-    }
-  };
+  try {
+    await axios.put(
+      `http://localhost:5000/api/auth/users/${customerId}/soft-delete`,
+      {},   // body empty
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
+
+   // setCustomers((prev) => prev.filter((c) => c._id !== customerId));
+    
+  } catch (error) {
+    console.error("Error deleting customer:", error);
+  }
+};
+
   const restoreCustomer = async (customerId) => {
   try {
     await axios.put(
-      `http://localhost:5000/api/admin/users/${customerId}/restore`,
+      `http://localhost:5000/api/auth/users/${customerId}/restore`,
       {},
       { headers: { Authorization: `Bearer ${getToken()}` } }
     );
@@ -82,6 +90,7 @@ console.log("frontend receives cusomer data",res.data);
     console.error("Error restoring customer:", error);
   }
 };
+
 
   return (
     <CustomerContext.Provider
