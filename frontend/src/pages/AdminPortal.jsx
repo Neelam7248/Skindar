@@ -4,7 +4,7 @@ import OrderManagement from "../components/admin/OrderManagement/OrderManagement
 import CustomerManagement from "../components/admin/CustomerManagement/CustomerManagement";
 //import AnalyticsDashboard from "./AnalyticsDashboard";
 import { getToken, logout } from "../utils/auth";
-
+import AdminCreation from "../components/admin/AdminManagement/CreateAdmin";
 function AdminPortal() {
   const [activeTab, setActiveTab] = useState("products");
 
@@ -23,7 +23,9 @@ function AdminPortal() {
         return <CustomerManagement />;
       // case "analytics":
       //   return <AnalyticsDashboard />;
-      default:
+      case "admin":
+        return <AdminCreation />;
+     
         return <ProductManagement />;
     }
   };
@@ -56,6 +58,13 @@ function AdminPortal() {
         >
           Analytics Dashboard
         </li>
+        <li
+          style={activeTab === "admin" ? styles.activeTab : styles.tab}
+          onClick={() => setActiveTab("admin")}
+        >
+          Admin Management
+        </li>
+      
         <li style={styles.logout} onClick={handleLogout}>
           Logout
         </li>

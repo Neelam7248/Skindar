@@ -1,8 +1,9 @@
 /* CategoryPage.css */
 
+/* Main Container */
 .category-page-container {
   padding: 20px;
-  max-width: 1200px;
+  max-width: 1200px; /* correct width, pehle 120px mistake thi */
   margin: auto;
 }
 
@@ -13,14 +14,14 @@
   color: #333;
 }
 
-/* Product grid */
+/* Product Grid - Desktop Default */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);   /* Desktop: 4 columns */
   gap: 20px;
 }
 
-/* Product card styling */
+/* Product Card */
 .product-card {
   border: 1px solid #ddd;
   padding: 15px;
@@ -36,8 +37,8 @@
 }
 
 .product-card img {
-  width: 100%;
-  height: 200px;
+  width: 180px;
+  height: 180px;
   object-fit: cover;
   margin-bottom: 10px;
   border-radius: 4px;
@@ -68,4 +69,86 @@
 
 .product-card button:hover {
   background-color: #005f87;
+}
+
+/* SALE TEXT */
+.sale-text {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #8a0620;
+  text-shadow: 
+    0 0 5px #ff3355,
+    0 0 10px #ff3355,
+    0 0 20px #ff0033,
+    0 0 30px #ff0033;
+  animation: pulse 1.2s infinite;
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* ----------------------------------------------------
+   RESPONSIVE BREAKPOINTS
+---------------------------------------------------- */
+
+/* Tablet: 768px – 1024px (3 columns) */
+@media (max-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 18px;
+  }
+
+  .product-card img {
+    width: 180px;
+    height: 180px;
+  }
+
+  .product-card h3 {
+    font-size: 1rem;
+  }
+}
+
+/* Small Tablet / Large Phone: 475px – 767px (2 columns) */
+@media (max-width: 767px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .product-card img {
+    width: 180px;
+    height: 180px;
+  }
+
+  .product-card h3 {
+    font-size: 0.95rem;
+  }
+
+  .category-page-container h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Mobile: <475px (1 column) */
+@media (max-width: 474px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .product-card img {
+    width: 180px;
+    height: 180px;
+  }
+
+  .product-card h3 {
+    font-size: 0.9rem;
+  }
+
+  .product-card p {
+    font-size: 0.75rem;
+  }
+
+  .category-page-container h1 {
+    font-size: 1.3rem;
+  }
 }

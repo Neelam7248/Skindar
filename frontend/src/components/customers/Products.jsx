@@ -1,93 +1,84 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { isLoggedIn } from "../../utils/auth";
+import React, { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import InnerImageZoom from "react-inner-image-zoom";
+import "react-inner-image-zoom/lib/InnerImageZoom/styles.css";
 import "./ProductPage.css";
-import Zoom from 'react-medium-image-zoom';
-import 'react-medium-image-zoom/dist/styles.css';
+import { ProductContext } from "../admin/ProductManagement/ProductContext";
+import { CartContext } from "./CartContext";
 
-function ProductPage() {
-  const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [selectedImages, setSelectedImages] = useState({});
-  const navigate = useNavigate();
+const ProductPage = () => {
+  const { id } = useParams();
+  const { products } = useContext(ProductContext);
+  const { addToCart } = useContext(CartContext);
 
-  useEffect(() => {
-    axios.get("http://localhost:5000/api/products")
-      .then(res => setProducts(res.data))
-      .catch(err => console.error(err));
-  }, []);
+  const product = products.find((p) => p._id === id);
 
-  const handleAddToCart = (product) => {
-    setCart((prevCart) => {
-      const exists = prevCart.find(item => item.id === product.id);
-      if (exists) {
-        return prevCart.map(item => item.id === product._id ? { ...item, quantity: item.quantity + 1 } : item);
-      } else {
-        return [...prevCart, { ...product, quantity: 1 }];
-      }
-    });
-  };
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
 
-  const handleBuyNow = (product) => {
-    if (!isLoggedIn()) {
-      alert("Please login or register before buying!");
-      navigate("/signin");
-      return;
-    }
-  };
-
-  const handleImageClick = (productId, image) => {
-    setSelectedImages(prev => ({ ...prev, [productId]: image }));
-  };
+  if (!product) {
+    return <p style={{ textAlign: "center", marginTop: "40px" }}>Product Not Found.</p>;
+  }
 
   return (
-    <div className="product-page">
-      <h2>Our Products</h2>
-      <div className="product-grid">
-        {Array.isArray(products) && products.length > 0 ? (
-          products.map(product => {
-            const mainImage = selectedImages[product._id] || product.images[0];
+    <div className="product-detail-container">
 
-            return (
-              <div key={product._id} className="product-card">
-                <div className="product-image-container">
-                  {/* Zoom component wrapping main image */}
-                  <Zoom>
-                    <img 
-                      src={mainImage} 
-                      alt={product.name} 
-                      className="zoomable"
-                    />
-                  </Zoom>
+  {/* ======= MAIN IMAGE ======= */}
+  <div className="main-image-wrapper">
+    <InnerImageZoom
+      src={previewImage || product.images[0]}
+      zoomSrc={previewImage || product.images[0]}
+      zoomType="hover"
+      fullscreenOnMobile={true}
+      zoomScale={2}
+      className="product-image"
+    />
+  </div>
 
-                  {/* Thumbnail images */}
-                  <div className="thumbnail-container">
-                    {product.images.map((img, idx) => (
-                      <img
-                        key={idx}
-                        src={img}
-                        alt={product.name + idx}
-                        className={`thumbnail ${mainImage === img ? 'active' : ''}`}
-                        onClick={() => handleImageClick(product._id, img)}
-                      />
-                    ))}
-                  </div>
-                </div>
+  {/* ======= THUMBNAIL IMAGES ======= */}
+  <div className="thumbnail-wrapper">
+    {product.images.map((img, index) => (
+      <img
+        key={index}
+        src={img}
+        alt={`thumb-${index}`}
+        className={`thumbnail-image ${previewImage === img ? "active" : ""}`}
+        onClick={() => setPreviewImage(img)}
+      />
+    ))}
+  </div>
 
-                <h3>{product.name}</h3>
-                <p>${product.price}</p>
-                <button onClick={() => handleAddToCart(product)}>Add to Cart</button>
-                <button onClick={() => handleBuyNow(product)}>Buy Now</button>
-              </div>
-            );
-          })
-        ) : (
-          <p>No product found</p>
-        )}
+  {/* ======= PRODUCT INFORMATION ======= */}
+  <div className="product-info">
+    <h2>{product.name}</h2>
+
+    <p className="price-section">
+      <del style={{ color: "#a00" }}>Rs 10000</del>
+      <ins style={{ color: "green", marginLeft: "6px" }}>
+        Rs {product.price}
+      </ins>
+    </p>
+
+    <p className="description">{product.description}</p>
+
+    <button className="add-btn" onClick={() => addToCart(product)}>
+      Add to Cart
+    </button>
+  </div>
+
+  {/* ======= MODAL IMAGE PREVIEW ======= */}
+  {showPreview && (
+    <div
+      className="preview-overlay"
+      onClick={() => setShowPreview(false)}
+    >
+      <div className="preview-box" onClick={(e) => e.stopPropagation()}>
+        <img src={previewImage} alt="preview" className="preview-img" />
       </div>
     </div>
+  )}
+</div>
   );
-}
+};
 
 export default ProductPage;

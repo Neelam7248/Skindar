@@ -1,99 +1,116 @@
 import React, { useContext } from "react";
 import { CartContext } from "./CartContext";
-import "./CartPage.css"; // Import the CSS file
 import { useNavigate } from "react-router-dom";
+import "./CartPage.css";
 
 function CartPage() {
-  const {buyNowAll,isLoggedIn, cartItems, increaseQty, decreaseQty,removeFromCart, totalPrice, clearCart } = useContext(CartContext);
-const navigate = useNavigate(); 
+  const {
+    buyNowAll,
+    isLoggedIn,
+    cartItems,
+    increaseQty,
+    decreaseQty,
+    removeFromCart,
+    totalPrice,
+    clearCart,
+  } = useContext(CartContext);
+
+  const navigate = useNavigate();
+
   return (
     <div className="cart-page">
       <h2>Your Cart</h2>
 
       {cartItems.length === 0 ? (
-        <p className="empty-text">No items yet.</p>
+        <>        <p className="empty-text">No items yet.</p>
+        {/* Footer */}
+      <footer>
+        <address>
+          Address: Shop no 1, United Plaza, nearest Levis factory outlet
+        </address>
+        <p>Skindar Javeid</p>
+        <p>Contact No:0323-6667743</p>
+      </footer></>
+
       ) : (
         <>
-          <div className="table-container">
-            <table className="cart-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Product</th>
-                  <th>Price (Rs)</th>
-                  <th>Quantity</th>
-                  <th>Subtotal</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cartItems.map((item, index) => (
-                  <tr key={item._id} className={index % 2 === 0 ? "even-row" : "odd-row"}>
-                    <td>{index + 1}</td>
-                    <td>{item.name}</td>
-                    <td>{item.price}</td>
-<td>
-                      <button
-                        className="qty-btn"
-                        onClick={() => decreaseQty(item._id)}
-                      >
-                        -
-                      </button>
-                      <span className="qty-number">{item.quantity}</span>
-                      <button
-                        className="qty-btn"
-                        onClick={() => increaseQty(item._id)}
-                      >
-                        +
-                      </button>
-                    </td>
-                    <td>{item.price * item.quantity}</td>
-                    <td>
-                      <button className="remove-btn" onClick={
-                                        () =>{  if(window.confirm("Are you sure you want to remove "))
-      { removeFromCart(item._id)}}}>
-Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {/* PRODUCT GRID */}
+          <div className="product-grid">
+            {cartItems.map((item) => (
+              <div key={item._id} className="product-card">
+                
+                {/* IMAGE */}
+                {item.images && item.images.length > 0 && (
+                  <img
+                    src={item.images[0]}
+                    alt={item.name}
+                    className="product-img"
+                  />
+                )}
+
+                {/* CARD BODY */}
+                <h6 className="card-title">{item.name}</h6>
+                <p className="price">Rs {item.price}</p>
+
+                {/* QUANTITY BUTTONS */}
+                <div className="qty-box">
+                  <button className="qty-btn" onClick={() => decreaseQty(item._id)}>-</button>
+                  <span className="qty-value">{item.quantity}</span>
+                  <button className="qty-btn" onClick={() => increaseQty(item._id)}>+</button>
+                </div>
+
+                <p className="subtotal">Subtotal: Rs {item.price * item.quantity}</p>
+
+                {/* REMOVE BUTTON */}
+                <button
+                  className="remove-btn"
+                  onClick={() => {
+                    if (window.confirm("Remove this item?")) {
+                      removeFromCart(item._id);
+                    }
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
           </div>
 
+          {/* CART SUMMARY */}
           <div className="cart-summary">
-            <h3>Total: Rs. {totalPrice}</h3><button
-  className="clear-btn"
-  onClick={() => {
-    if (window.confirm("Are you sure you want to cancel?")) {
-      clearCart(); // ✅ call the function
-    }
-  }}
->
-  Clear Cart
-</button>
+            <h4>Total: Rs {totalPrice}</h4>
 
-<button
-  className="buy-btn"
-  onClick={() => {
-    console.log("TOKEN:", localStorage.getItem("token"));
-    console.log("isLoggedIn():", isLoggedIn());
+            <button
+              className="clear-btn"
+              onClick={() => {
+                if (window.confirm("Clear entire cart?")) {
+                  clearCart();
+                }
+              }}
+            >
+              Clear Cart
+            </button>
 
-    if (!isLoggedIn()) {
-      navigate("/signin");  // ← user login nahi, to register page per bhej do
-      return;
-    }
-
-    buyNowAll(); // user logged in ho to previous logic chale
-  }}
->
-  Buy Now All
-</button>
-
+            <button
+              className="checkout-btn"
+              onClick={() => {
+                if (!isLoggedIn()) {
+                  navigate("/signin");
+                  return;
+                }
+                buyNowAll();
+              }}
+            >
+              Buy Now
+            </button>
           </div>
         </>
-      )}
+        
+      )
+      }
+      
     </div>
+    
   );
 }
 

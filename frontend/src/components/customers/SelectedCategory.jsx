@@ -1,22 +1,31 @@
 import React, { useContext, useEffect } from "react";
-import { useParams ,Link} from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { ProductContext } from "../admin/ProductManagement/ProductContext";
 import CartPage from "./CartPage";
-import "./CategoryPage.css";
+import "./Home.css"; 
 import { CartContext } from "./CartContext";
+import ProductPage from "./Products";
 const SelectedCategory = () => {
   const { category } = useParams();
-  const { selectedCategoryProducts, handleCategorySelect, loading, error } = useContext(ProductContext);
-const {cartItems,increaseQty, decreaseQty,addToCart, removeFromCart, clearCart, totalPrice }=useContext(CartContext);
+  const { selectedCategoryProducts, handleCategorySelect, loading, error } =
+    useContext(ProductContext);
+
+  const {
+    addToCart,
+  } = useContext(CartContext);
+
   useEffect(() => {
     if (category) {
-      handleCategorySelect(category); // fetch products for this category
+      handleCategorySelect(category);
     }
   }, [category, handleCategorySelect]);
 
   return (
     <div className="category-page-container">
-      <h2>category</h2>
+      
+      <h2 style={{ textTransform: "capitalize", marginBottom: "10px" }}>
+        {category}
+      </h2>
 
       {loading ? (
         <p>Loading products...</p>
@@ -27,23 +36,47 @@ const {cartItems,increaseQty, decreaseQty,addToCart, removeFromCart, clearCart, 
       ) : (
         <div className="product-grid">
           {selectedCategoryProducts.map((product) => (
-              <div key={product._id} className="product-card">
-<img src={product.images[0]} alt={product.name} />
+            <div key={product._id} className="product-card">
 
-                <h3>{product.name}</h3>
-                <p>Rs. {product.price}</p>
-                <Link to={`/productpage/${product._id}`} className="btn-view">View</Link>
-<button onClick={() => addToCart(product)}>Add to Cart</button>
-    
- </div>))}
+              {/* Product Image */}
+              <img src={product.images[0]} alt={product.name} />
+
+              {/* Product Title */}
+              <h6>{product.name}</h6>
+
+              {/* Price Section */}
+              <p className="product-price">
+                <del style={{ color: "#8a0620" }}>Rs 10000</del>{" "}
+                <ins style={{ color: "green" }}>
+                  now Only <i>Rs {product.price}</i>
+                </ins>
+              </p>
+
+              {/* Buttons */}
+              <div className="product-buttons">
+                <Link to={`/productpage/${product._id}`} className="btn-view">
+                  View
+                </Link>
+
+                <button
+                  onClick={() => addToCart(product)}
+                  className="btn-view"
+                 
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      <CartPage/>
-            {/* Footer */}
-            <footer>
-              <p>© 2025 GentsShop | All Rights Reserved</p>
-            </footer>
+      <CartPage />
+
+      {/* Footer */}
+      <footer>
+        <p>© 2025 GentsShop | All Rights Reserved</p>
+      </footer>
     </div>
   );
 };

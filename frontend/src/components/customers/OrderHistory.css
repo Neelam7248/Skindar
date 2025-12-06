@@ -1,92 +1,160 @@
-/* orderhistory.css */
-
-.order-history-container {
-  max-width: 1000px;
+/* ==========================
+   Global Styles
+========================== */
+.order-history {
+  max-width: 1200px;
   margin: 20px auto;
-  padding: 20px;
+  padding: 10px;
   font-family: 'Poppins', sans-serif;
 }
 
-.order-card {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 15px;
+.order-history h2 {
+  text-align: center;
+  color: #0077b6;
   margin-bottom: 20px;
-  background: #0077b6;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-color:#fff
 }
 
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+/* ==========================
+   Order Card Grid
+========================== */
+.order-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 cards per row on large screens */
+  gap: 20px;
+}
+
+.order-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 20px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  width: 100%;
+}
+
+.order-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.order-card h3 {
+  color: #0077b6;
   margin-bottom: 10px;
 }
 
-.order-header div {
-  margin: 5px 0;
+.order-card h4 {
+  margin: 10px 0 5px;
+  color: #0077b6;
 }
 
-.order-items-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+.order-card p, 
+.order-card ul, 
+.order-card li {
+  font-size: 0.85rem;
+  margin-bottom: 5px;
 }
 
-.order-items-table th,
-.order-items-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-  font-size: 14px;
+.order-card ul {
+  padding-left: 20px;
 }
 
-.order-items-table th {
-  background-color: #0077b6;
-  color: #fff;
+.admin-contact {
+  margin-top: 40px;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #acd8f1;
+  color: #121111;
+  text-align: center;
 }
 
-.order-summary {
-  text-align: right;
-  margin-top: 10px;
-  font-weight: 600;
-  font-size: 15px;
+.admin-contact a {
+  color: #480101;
+  text-decoration: underline;
 }
 
-/* Responsive: Tablets / small screens */
-@media (max-width: 768px) {
-  .order-header {
-    flex-direction: column;
-    align-items: flex-start;
+/* ==========================
+   Large Tablet / Small Desktop (769px - 1024px)
+========================== */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .order-card-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
+    gap: 15px;
   }
 
-  .order-items-table th,
-  .order-items-table td {
-    font-size: 13px;
-    padding: 6px;
-  }
-}
-
-/* Responsive: Mobile phones */
-@media (max-width: 480px) {
   .order-card {
+    padding: 18px;
+    background-color: #0077b6;
+    color: #fff;
+    margin-top: 10px;
+  }
+
+  .order-card h3 {
+    font-size: 1rem;
+  }
+
+  .order-card p, .order-card li {
+    font-size: 0.8rem;
+  }
+}
+
+/* ==========================
+   Tablet / Small Tablet (481px - 768px)
+========================== */
+@media (max-width: 768px) and (min-width: 481px) {
+  .order-card-grid {
+    grid-template-columns: 1fr; /* 1 card per row */
+    gap: 12px;
+  }
+
+  .order-card {
+    padding: 15px;
+    background-color: #0077b6;
+    color: #fff;
+    margin-top: 10px;
+  }
+
+  .order-card h3 {
+    font-size: 0.95rem;
+  }
+
+  .order-card p, .order-card li {
+    font-size: 0.75rem;
+  }
+}
+
+/* ==========================
+   Mobile (up to 480px)
+========================== */
+@media (max-width: 480px) {
+  .order-card-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 5px;
+    width: 100%;
+    justify-items: stretch;
+    margin: 0;
+  }
+
+  .order-card {
+    padding: 10px;
+    width: auto;
+    margin: 0;
+  }
+
+  .order-card h3 {
+    font-size: 0.9rem;
+  }
+
+  .order-card p, .order-card li {
+    font-size: 0.7rem;
+  }
+
+  .admin-contact {
+    font-size: 0.8rem;
     padding: 10px;
   }
 
-  .order-items-table {
-    display: block;
-    overflow-x: auto;
-    font-size: 12px;
-  }
-
-  .order-items-table th,
-  .order-items-table td {
-    padding: 5px;
-    white-space: nowrap;
-  }
-
-  .order-summary {
-    font-size: 14px;
+  .admin-contact a {
+    font-size: 0.8rem;
   }
 }

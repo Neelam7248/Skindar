@@ -26,7 +26,7 @@ const { logOut} = useContext(CartContext); // ✅ from context
   return (
     <nav className="navbar">
       <div className="logo">
-        <Link to="/"><FaShoppingBag />Denim studio 
+        <Link to="/">Denim Studio 
 </Link>
  
  
@@ -45,9 +45,9 @@ const { logOut} = useContext(CartContext); // ✅ from context
           onMouseEnter={() => setIsDropdownOpen(true)}
           onMouseLeave={() => setIsDropdownOpen(false)}
         >
-          <button className="dropbtn"><FaProductHunt /> Products ▼</button>
+          <button ><FaProductHunt /> Products ▼</button>
           {isDropdownOpen && (
-            <ul className="dropdown-content">
+            <ul >
               <li onClick={() => handleCategoryClick("jackets")}>Jackets</li>
               <li onClick={() => handleCategoryClick("t-shirts")}>TShirts</li>
             <li onClick={() => handleCategoryClick("caps")}>Caps</li>
@@ -63,9 +63,7 @@ const { logOut} = useContext(CartContext); // ✅ from context
        <li>
           <button 
             onClick={() => logOut()} 
-            className="btn btn-link p-0 m-0"
-            style={{ color: "white", textDecoration: "none" }}
-          >
+           >
             <FaInfoCircle /> Logout
           </button>
         </li>

@@ -1,51 +1,127 @@
+/* ===============================
+   NAVBAR MAIN CONTAINER
+================================*/
 .navbar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
+  justify-content:space-between;
+  align-items:flex-end;
+  padding: 2px 22px;
   background-color: #0077b6;
   color: #fff;
   position: relative;
-  display:"block";
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
+/* ===============================
+   LOGO
+================================*/
+.logo a {
+  font-size: 26px;
+  font-weight: 300;
+  font-style: italic;
+  color: #fff;
+  letter-spacing: 1px;
+  text-decoration: none;
+  transition: 0.3s;
 }
 
+.logo a:hover {
+  color: #dff5ff;
+}
+
+/* ===============================
+   GLOBAL LINK + BUTTON STYLE
+================================*/
+.nav-links li a,
+.nav-links li button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  background: transparent;
+  border: none;
+  color: #fff;
+
+  padding: 8px 14px;
+  border-radius: 6px;
+
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+
+  transition: 0.25s;
+  cursor: pointer;
+}
+
+/* Hover Style */
+.nav-links li a:hover,
+.nav-links li button:hover {
+  background: rgba(255,255,255,0.18);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* ===============================
+   NAV LINKS
+================================*/
 .nav-links {
   display: flex;
   list-style: none;
-  gap: 15px;
-
+  gap: 1px;
+    margin-left: auto;  
 }
 
-.nav-links li a {
-   color:antiquewhite;
-  text-decoration: none;
-  font-weight: 500;
-}
-
+/* ===============================
+   HAMBURGER (Mobile)
+================================*/
 .hamburger {
   display: none;
   font-size: 28px;
   cursor: pointer;
+  color: #fff;
 }
 
-/* Mobile View */
+/* ===============================
+   DROPDOWN MENU
+================================*/
+.dropdown ul {
+  position: absolute;
+  background-color: #0077b6;
+  list-style: none;
+  padding: 10px 0;
+  margin-top: 5px;
+  border-radius: 10px;
+  min-width: 150px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+
+.dropdown ul li {
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: 0.2s;
+  color: #fff;
+}
+
+.dropdown ul li:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* ===============================
+   MOBILE VIEW
+================================*/
 @media (max-width: 768px) {
   .nav-links {
     display: none;
     flex-direction: column;
-    width:35%;
-    background-color: #617dd0;
+    width: 30%;
+    background-color: #0077b6;
     position: absolute;
-    top: 40px;
-    left: 75%;
-    right:50px;
-    padding: 10px 20px;
-   border-radius: 18px;
+    top: 55px;
+    right: 0;
+    padding: 15px 20px;
+    border-radius: 12px 0 0 12px;
+    gap: 10px;
+    box-shadow: -2px 6px 20px rgba(0,0,0,0.2);
   }
 
   .nav-links.show {
@@ -54,5 +130,82 @@
 
   .hamburger {
     display: block;
+  }
+
+  .dropdown ul {
+    position: relative;
+    box-shadow: none;
+    background: #0067a8;
+    width: 100%;
+  }
+}
+
+/* ===============================
+   UNIVERSAL BUTTON STYLE 
+================================*/
+button {
+  appearance: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Disable unnecessary browser default */
+button:focus {
+  outline: none;
+}
+/* ===============================
+   MOBILE VIEW SMALL SCREENS (< 475px)
+================================*/
+@media (max-width: 475px) {
+  .nav-links {
+    display: none; /* default hidden */
+    flex-direction: column;
+    width:40%; /* chhoti screen ke liye full width ke kareeb */
+    background-color: #0077b6;
+    position: absolute;
+    top: 55px;
+    right: 0;
+    padding: 15px 15px;
+    border-radius: 0 0 12px 12px; /* bottom rounded */
+    gap: 8px;
+    box-shadow: -2px 6px 20px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    z-index: 999;
+  }
+
+  .nav-links.show {
+    display: flex; /* menu visible on hamburger click */
+  }
+
+  /* Hamburger icon */
+  .hamburger {
+    display: block;
+  }
+
+  /* Adjust links for small screens */
+  .nav-links li a,
+  .nav-links li button {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+
+  /* Dropdown inside mobile menu */
+  .dropdown ul {
+    position: relative;
+    width: 100%;
+    background: #0067a8;
+    border-radius: 6px;
+    margin-top: 5px;
+    box-shadow: none;
+  }
+
+  .dropdown ul li {
+    padding: 8px 10px;
+    font-size: 14px;
   }
 }

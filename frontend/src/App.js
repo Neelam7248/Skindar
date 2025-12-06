@@ -9,7 +9,6 @@ import ProtectedRoute from './components/ProtectedRoute'; // ✅ Import protecte
 import Home from './components/customers/HomePage';
 import ProductDetail from './components/customers/ProductDetailPage';
 import SelectedCategory from './components/customers/SelectedCategory';
-import ProductCard from './components/customers/ProductCard';
 import CheckoutPage from './pages/CheckoutPage';
 import CartPage from './components/customers/CartPage';
 import OrderHistory from './components/customers/OrderHistory';
@@ -28,7 +27,6 @@ function App() {
         <Route path="/productpage" element={<ProductPage />} /> {/* Public page */}
           <Route path="/productpage/:id" element={<ProductDetail />} /> 
 <Route path="/selectedCategory"element={<SelectedCategory/>}/>
-<Route path="/productcard" element={<ProductCard />} /> 
  <Route path="/checkout" element={<CheckoutPage />} />
  <Route path="orders" element={<OrderHistory />} />
  <Route path="/cartpage" element={<CartPage />} />

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { CustomerContext } from "../CustomerManagement/CustomerContext";
+import "./CustomerList.css"; // CSS file for styling
 
 export default function CustomerList() {
   const {
@@ -12,7 +13,7 @@ export default function CustomerList() {
   } = useContext(CustomerContext);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCustomer, setSelectedCustomer] = useState(null); // For profile modal
+  const [selectedCustomer, setSelectedCustomer] = useState(null); 
   const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
@@ -52,97 +53,55 @@ export default function CustomerList() {
       ) : customers?.length === 0 ? (
         <p>No customers found</p>
       ) : (
-        <div style={{ overflowX: "auto" }}>
-          <table className="table table-striped table-bordered">
-            <thead className="table-dark">
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Status</th>
-                <th>Address</th>
-                <th>Signup Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {customers.map((user) => (
-                <tr key={user._id}>
-                  <td>{user.name}</td>
-                  <td>{user.email}</td>
-                  <td>{user.phone || "N/A"}</td>
-
-                  <td>
-                    {user.isActive ? (
-                      <span className="badge bg-success">Active</span>
-                    ) : (
-                      <span className="badge bg-danger">Deleted</span>
-                    )}
-                  </td>
-
-                  <td>{user.address || "N/A"}</td>
-                  <td>{new Date(user.createdAt).toLocaleDateString()}</td>
-
-                  <td>
-                    {/* View Button – OPEN PROFILE MODAL */}
-                    <button
-                      className="btn btn-sm btn-primary me-2"
-                      onClick={() => openProfile(user)}
-                    >
-                      View
-                    </button>
-
-                    {user.isActive && (
-                      <button
-                        className="btn btn-sm btn-danger me-2"
-                        disabled={loading}
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              "Are you sure you want to soft delete this customer?"
-                            )
-                          ) {
-                            deleteCustomer(user._id);
-                          }
-                        }}
-                      >
-                        {loading ? "Deleting..." : "Delete"}
-                      </button>
-                    )}
-
-                    {!user.isActive && (
-                      <button
-                        className="btn btn-sm btn-warning"
-                        disabled={loading}
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              "Are you sure you want to restore this customer?"
-                            )
-                          ) {
-                            restoreCustomer(user._id);
-                          }
-                        }}
-                      >
-                        {loading ? "Restoring..." : "Restore"}
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="customer-card-grid">
+          {customers.map((user) => (
+            <div className="customer-card" key={user._id}>
+              <h5>{user.name}</h5>
+              <p><strong>Email:</strong> {user.email}</p>
+              <p><strong>Phone:</strong> {user.phone || "N/A"}</p>
+              <p>
+                <strong>Status:</strong>{" "}
+                <span className={user.isActive ? "active-status" : "deleted-status"}>
+                  {user.isActive ? "Active" : "Deleted"}
+                </span>
+              </p>
+              <div className="customer-card-actions">
+                <button className="btn btn-sm btn-primary" onClick={() => openProfile(user)}>View</button>
+                
+                {user.isActive ? (
+                  <button
+                    className="btn btn-sm btn-danger"
+                    disabled={loading}
+                    onClick={() => {
+                      if (window.confirm("Are you sure you want to soft delete this customer?")) {
+                        deleteCustomer(user._id);
+                      }
+                    }}
+                  >
+                    {loading ? "Deleting..." : "Delete"}
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-sm btn-warning"
+                    disabled={loading}
+                    onClick={() => {
+                      if (window.confirm("Are you sure you want to restore this customer?")) {
+                        restoreCustomer(user._id);
+                      }
+                    }}
+                  >
+                    {loading ? "Restoring..." : "Restore"}
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* PROFILE CARD MODAL */}
+      {/* PROFILE MODAL */}
       {showProfile && selectedCustomer && (
-        <div
-          className="modal show d-block"
-          tabIndex="-1"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
+        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">

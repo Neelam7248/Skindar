@@ -10,7 +10,7 @@ export const CartProvider = ({ children }) => {
    const [profile, setProfile] = useState(null); // ✅ Profile state
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState("");
-  const [adminContact, setAdminContact] = useState("");
+  const [adminContacts, setAdminContacts] = useState([]);
   
   const navigate = useNavigate();
 const [orders, setOrders] = useState([]);
@@ -28,6 +28,8 @@ const [orders, setOrders] = useState([]);
         return [...prev, { ...product, quantity: 1 }];
       }
     });
+
+      triggerAddToCartPopup();
   };
 
   const increaseQty = (id) => {
@@ -136,14 +138,24 @@ const logOut = () => {
     navigate("/signin", { replace: true });
   };
 // Fetch Admin Contact Info (example of another utility function)
-  const fetchAdminContact = async () => {
+ const fetchAdminContact = async () => {
   try {
-    const res = await axios.get("http://localhost:5000/api/admin/contact");
-    setAdminContact(res.data);
+    const token = getToken();
+
+    const res = await axios.get("http://localhost:5000/api/admin/contact", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Admin contact fetched:", res.data);
+    setAdminContacts(res.data.adminContacts);
+
   } catch (err) {
     console.error("Failed to fetch admin contact", err);
   }
 };
+
 
   // 🧑‍💼 Update User Profile
 const updateProfile = async (updatedData) => {
@@ -186,7 +198,13 @@ console.log("Profile updated:", res.data);
   }
 };
 
-    
+   const [showPopup, setShowPopup] = useState(false);
+
+const triggerAddToCartPopup = () => {
+  setShowPopup(true);
+  setTimeout(() => setShowPopup(false), 3000);
+};
+ 
 
   return (
     <CartContext.Provider
@@ -195,7 +213,8 @@ console.log("Profile updated:", res.data);
        profile,
        logOut,
        profileLoading,
-       
+       triggerAddToCartPopup,
+       showPopup,
         updateProfile,
        profileError,
         cartItems,
@@ -210,8 +229,8 @@ console.log("Profile updated:", res.data);
         clearCart,
         totalPrice,
         fetchAdminContact,
-        adminContact,
-setAdminContact,      }}
+        adminContacts,
+setAdminContacts,      }}
     >
       {children}
     </CartContext.Provider>

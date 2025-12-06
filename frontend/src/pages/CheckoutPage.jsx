@@ -4,10 +4,12 @@ import { CartContext } from "../components/customers/CartContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getToken } from "../utils/auth";
+import "./CheckoutPage.css";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const { cartItems, totalPrice, profile, fetchProfile, clearCart } = useContext(CartContext);
+  const [message, setMessage] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -22,7 +24,14 @@ const CheckoutPage = () => {
 
   // Fetch profile on page load
   useEffect(() => {
-    fetchProfile();
+    const token = getToken();
+    if (!token) {
+      setMessage("Session expired. Please login again.");
+      return;
+    }
+    fetchProfile().catch(() => {
+      setMessage("Session expired. Please login again.");
+    });
   }, []);
 
   // Update formData when profile is fetched
@@ -64,7 +73,7 @@ const CheckoutPage = () => {
           return;
         }
 
-        const res = await axios.post(
+        await axios.post(
           "http://localhost:5000/api/orders",
           orderDetails,
           {
@@ -72,7 +81,6 @@ const CheckoutPage = () => {
           }
         );
 
-        console.log("Order placed successfully:", res.data);
         alert("Order placed successfully!");
         clearCart();
         navigate("/");
@@ -86,25 +94,32 @@ const CheckoutPage = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="checkout-page container mt-4">
       <h2 className="text-center text-primary mb-4">Checkout</h2>
 
+      {message && (
+        <div className="alert alert-danger text-center">
+          {message}
+        </div>
+      )}
+
       {cartItems.length === 0 ? (
-        <p className="text-center text-muted">Your cart is empty</p>
+        <p className="empty-text">Your cart is empty</p>
       ) : (
         <div className="row">
           {/* Cart Items */}
           <div className="col-lg-6 mb-4" style={{ maxHeight: "500px", overflowY: "auto" }}>
             {cartItems.map((item) => (
-              <div key={item._id} className="card mb-3 shadow-sm">
-                <img
-                  src={item.images[0]}
-                  className="card-img-top"
-                  alt={item.name}
-                  style={{ height: "200px", objectFit: "cover" }}
-                />
+              <div key={item._id} className="card product-card mb-3 shadow-sm">
+                {item.images && item.images[0] && (
+                  <img
+                    src={item.images[0]}
+                    alt={item.name}
+                    className="card-img-top"
+                  />
+                )}
                 <div className="card-body">
-                  <h5 className="card-title text-primary">{item.name}</h5>
+                  <h5 className="card-title">{item.name}</h5>
                   <p className="text-success fw-semibold">Price: Rs. {item.price}</p>
                   <p className="fw-semibold">Subtotal: Rs. {item.price * item.quantity}</p>
                 </div>
@@ -114,7 +129,10 @@ const CheckoutPage = () => {
 
           {/* Checkout Form */}
           <div className="col-lg-6">
-            <form onSubmit={handleConfirmOrder} className="p-4 bg-light rounded shadow-sm">
+            <form
+              onSubmit={handleConfirmOrder}
+              className="checkout-form p-4 bg-light rounded shadow-sm"
+            >
               <h5 className="text-primary mb-3">Your Details</h5>
 
               <div className="mb-3">
@@ -150,6 +168,7 @@ const CheckoutPage = () => {
                   onChange={handleChange}
                   className="form-control"
                   required
+                  disabled={!!message}
                 />
               </div>
 
@@ -163,6 +182,7 @@ const CheckoutPage = () => {
                   className="form-control"
                   placeholder="Auto-filled based on address"
                   required
+                  disabled={!!message}
                 />
               </div>
 
@@ -175,6 +195,7 @@ const CheckoutPage = () => {
                   onChange={handleChange}
                   className="form-control"
                   placeholder="Enter your full address"
+                  disabled={!!message}
                 />
               </div>
 
@@ -189,6 +210,7 @@ const CheckoutPage = () => {
                     value="cod"
                     checked={formData.paymentMethod === "cod"}
                     onChange={handleChange}
+                    disabled={!!message}
                   />
                   <label className="form-check-label">Cash on Delivery</label>
                 </div>
@@ -200,19 +222,24 @@ const CheckoutPage = () => {
                     value="online"
                     checked={formData.paymentMethod === "online"}
                     onChange={handleChange}
+                    disabled={!!message}
                   />
                   <label className="form-check-label">Online Payment</label>
                 </div>
               </div>
 
               {/* Order Summary */}
-              <div className="mb-3 text-end fw-semibold text-primary">
+              <div className="cart-summary text-end fw-semibold text-primary">
                 Subtotal: Rs. {totalPrice} <br />
                 Service Charges: Rs. {serviceCharge} <br />
                 Grand Total: Rs. {totalPrice + serviceCharge}
               </div>
 
-              <button type="submit" className="btn btn-primary w-100">
+              <button
+                type="submit"
+                className="checkout-btn btn w-100"
+                disabled={!!message}
+              >
                 Confirm Order
               </button>
             </form>
