@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { OrderContext } from "./OrderContext";
+import "./UserOrder.css"; // Separate CSS
 
 export default function UserOrders({ email }) {
   const { orders, updateOrderStatus, fetchUserOrders } = useContext(OrderContext);
@@ -24,67 +25,48 @@ export default function UserOrders({ email }) {
   }
 
   return (
-    <div style={{ overflowX: "auto" }}>
-      <table className="table table-striped table-bordered">
-        <thead className="table-dark">
-          <tr>
-            <th>Order ID</th>
-            <th>Created At</th>
-            <th>Email</th>
-            <th>Customer</th>
-            <th>Items</th>
-            <th>Subtotal</th>
-            <th>Service Charge</th>
-            <th>Grand Total</th>
-            <th>Status / Updated</th>
-            <th>Update Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => (
-            <tr key={order._id}>
-              <td>{order._id}</td>
-              <td>{new Date(order.createdAt).toLocaleString()}</td>
-              <td>{order.customer.email}</td>
-              <td>{order.customer.name}</td>
-              <td>
-                {order.items.map((item, idx) => (
-                  <div key={idx}>
-                    {item.name} x {item.quantity}
-                  </div>
-                ))}
-              </td>
-              <td>Rs. {order.subtotal}</td>
-              <td>Rs. {order.serviceCharge}</td>
-              <td>Rs. {order.grandTotal}</td>
-              <td>
-                {order.status || "Pending"} <br />
-                <small className="text-muted">{new Date(order.updatedAt).toLocaleString()}</small>
-              </td>
-              <td>
-                <select
-                  className="form-select mb-1"
-                  value={selectedStatus[order._id] || order.status || "Pending"}
-                  onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="Processing">Processing</option>
-                  <option value="Shipped">Shipped</option>
-                  <option value="Delivered">Delivered</option>
-                  <option value="Cancelled">Cancelled</option>
-                </select>
-                <button
-                  className="btn btn-sm btn-primary"
-                  onClick={() => handleUpdateStatus(order._id)}
-                  disabled={selectedStatus[order._id] === order.status}
-                >
-                  Update
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="orders-container">
+      {orders.map((order) => (
+        <div key={order._id} className="order-card">
+          <h6 className="order-id">Order ID: {order._id}</h6>
+          <p className="order-date">Created: {new Date(order.createdAt).toLocaleString()}</p>
+          <p><strong>Customer:</strong> {order.customer.name}</p>
+          <p><strong>Email:</strong> {order.customer.email}</p>
+          <div className="order-items">
+            <strong>Items:</strong>
+            {order.items.map((item, idx) => (
+              <div key={idx} className="item">
+                {item.name} x {item.quantity}
+              </div>
+            ))}
+          </div>
+          <p><strong>Subtotal:</strong> Rs. {order.subtotal}</p>
+          <p><strong>Service Charge:</strong> Rs. {order.serviceCharge}</p>
+          <p><strong>Grand Total:</strong> Rs. {order.grandTotal}</p>
+          <p className="order-status">
+            <strong>Status:</strong> {order.status || "Pending"} <br />
+            <small className="updated">Updated: {new Date(order.updatedAt).toLocaleString()}</small>
+          </p>
+          <select
+            className="status-select"
+            value={selectedStatus[order._id] || order.status || "Pending"}
+            onChange={(e) => handleStatusChange(order._id, e.target.value)}
+          >
+            <option value="Pending">Pending</option>
+            <option value="Processing">Processing</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+          <button
+            className="update-btn"
+            onClick={() => handleUpdateStatus(order._id)}
+            disabled={selectedStatus[order._id] === order.status}
+          >
+            Update Status
+          </button>
+        </div>
+      ))}
     </div>
   );
 }

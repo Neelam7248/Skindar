@@ -21,8 +21,8 @@ function AdminPortal() {
         return <OrderManagement />;
       case "customers":
         return <CustomerManagement />;
-      // case "analytics":
-      //   return <AnalyticsDashboard />;
+       case "analytics":
+         return <p style={{color:"red", fontSize:"Bold" ,fontFamily:"emoji"}}><i>Comming Soon</i></p>;
       case "admin":
         return <AdminCreation />;
      
