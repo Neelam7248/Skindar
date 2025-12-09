@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProductPage from './components/customers/Products';
-import CustomerRegister from './components/customers/Customers';
+import CustomerRegister from './components/customers/CustomersRegister';
 import Navbar from './components/Navbar';
 import Signin from './components/Signin';
 import AdminPortal from './pages/AdminPortal';
@@ -13,6 +13,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import CartPage from './components/customers/CartPage';
 import OrderHistory from './components/customers/OrderHistory';
 import Profile from './components/customers/Profile';
+import ForgotPassword from './components/customers/ForgetPassword';
 function App() {
   return (
   <>
@@ -31,6 +32,8 @@ function App() {
  <Route path="orders" element={<OrderHistory />} />
  <Route path="/cartpage" element={<CartPage />} />
  <Route path="/profile" element={<Profile />} />
+ 
+ <Route path="/forgetpassword" element={<ForgotPassword />} />
 
         {/* Admin-only Protected Route */}
         <Route

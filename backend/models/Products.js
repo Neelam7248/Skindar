@@ -11,7 +11,11 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    price: {
+    realPrice: {
+      type: Number,
+      required: true,
+    },
+    discountPrice: {
       type: Number,
       required: true,
     },
@@ -25,19 +29,24 @@ const productSchema = new mongoose.Schema(
       required: true,
       enum: ["Male", "Female", "Unisex"],
     },
-    size: {
-      type: [String], // Example: ["S", "M", "L", "XL"]
-      default: [],
+
+    // ✅ Sizes with individual stock
+    sizes: {
+      S: { type: Number, default: 0 },
+      M: { type: Number, default: 0 },
+      L: { type: Number, default: 0 },
+      XL: { type: Number, default: 0 },
+      XXL: { type: Number, default: 0 },
     },
+
     color: {
       type: [String], // Example: ["Red", "Blue", "Black"]
       default: [],
     },
     images: {
-  type: [String], // array of image URLs
-  default: [],    // agar image nahi di gayi to empty array
-},
-
+      type: [String], // array of image URLs
+      default: [],
+    },
     stock: {
       type: Number,
       default: 0,

@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { saveAuthData } from "../utils/auth";
+import "./customers/CustomersRegister"; // ✅ Aapki CSS file
 
 function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // password toggle
 
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Agar redirect location pass hua hai (from CartPage / Checkout)
   const from = location.state?.from || "/cartpage";
 
   const handleSignin = async (e) => {
@@ -26,15 +26,11 @@ function Signin() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userType", res.data.user.userType);
 
-      // Agar customer login hai, to 'from' page pe redirect karein
-      if (res.data.user.userType === "customer") {
-        navigate(from); // ✅ Redirect to intended page
-      } else if (res.data.user.userType === "admin") {
-        navigate("/adminportal");
-      }
+      if (res.data.user.userType === "customer") navigate(from);
+      else if (res.data.user.userType === "admin") navigate("/adminportal");
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
-        setMessage("Server not reachable. Please check if backend is running.");
+        setMessage("Server not reachable. Please check backend.");
       } else {
         setMessage(error.response?.data?.message || "Login failed");
       }
@@ -42,32 +38,53 @@ function Signin() {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
+    <div className="register-page">
       <h2>Signin</h2>
-      <form onSubmit={handleSignin}>
-        <label>Email</label>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <br /><br />
-        <label>Password</label>
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <br /><br />
-        <button type="submit">Signin</button>
-      </form>
-      <p>If you are not register then please first signup.</p>
-      <button onClick={() => navigate("/register")}>Signup/Register</button>
-      {message && <p>{message}</p>}
+      <div className="register-card">
+        <form onSubmit={handleSignin}>
+          <label>Email</label>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <label>Password</label>
+          <div style={{ position: "relative" }}>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: "absolute",
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                color: "#0077b6",
+                fontWeight: "600",
+              }}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </span>
+          </div>
+
+          <button type="submit">Signin</button>
+        </form>
+
+        <p>If you are not registered, please signup first.</p>
+        <button onClick={() => navigate("/register")}>Signup/Register</button>
+        <button onClick={() => navigate("/forgetpassword")}>Forgot Password</button>
+
+        {message && <p>{message}</p>}
+      </div>
     </div>
   );
 }

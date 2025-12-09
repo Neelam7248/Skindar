@@ -37,7 +37,8 @@ isActive: {
   type: Boolean,
   default: true  // true = Active, false = Deleted
 }
-,
+,// new
+    verificationToken: String, // new,
 
 createdAt: {
   type: Date,

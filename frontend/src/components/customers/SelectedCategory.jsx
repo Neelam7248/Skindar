@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link,useNavigate } from "react-router-dom";
 import { ProductContext } from "../admin/ProductManagement/ProductContext";
 import CartPage from "./CartPage";
 import "./Home.css"; 
@@ -9,7 +9,7 @@ const SelectedCategory = () => {
   const { category } = useParams();
   const { selectedCategoryProducts, handleCategorySelect, loading, error } =
     useContext(ProductContext);
-
+const navigate = useNavigate();
   const {
     addToCart,
   } = useContext(CartContext);
@@ -46,17 +46,17 @@ const SelectedCategory = () => {
 
               {/* Price Section */}
               <p className="product-price">
-                <del style={{ color: "#8a0620" }}>Rs 10000</del>{" "}
+                <del style={{ color: "#8a0620" }}>{product.realPrice}</del>{" "}
                 <ins style={{ color: "green" }}>
-                  now Only <i>Rs {product.price}</i>
+                  now Only <i>Rs {product.discountPrice}</i>
                 </ins>
               </p>
 
               {/* Buttons */}
               <div className="product-buttons">
-                <Link to={`/productpage/${product._id}`} className="btn-view">
-                  View
-                </Link>
+                <button onClick={() => navigate(`/productpage/${product._id}`)}>
+                View
+              </button>
 
                 <button
                   onClick={() => addToCart(product)}
@@ -75,7 +75,7 @@ const SelectedCategory = () => {
 
       {/* Footer */}
       <footer>
-        <p>© 2025 GentsShop | All Rights Reserved</p>
+        <p>© 2025 Denim Shop | All Rights Reserved</p>
       </footer>
     </div>
   );

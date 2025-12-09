@@ -43,8 +43,8 @@ function Home() {
                 <img src={product.images[0]} alt={product.name} />
                 <h6>{product.name}</h6>
                 <p>
-                  <del className="product-price">{product.actualPrice || "NA"}</del><br/>
-                  <ins className="product-price">Rs {product.price}</ins>
+                  <del className="product-price">{product.realPrice || "NA"}</del><br/>
+                  <ins className="product-price">Rs {product.discountPrice}</ins>
                 </p>
                 <div>
                   <Link to={`/productpage/${product._id}`} className="btn-view">
@@ -73,7 +73,8 @@ function Home() {
                 <div className="cart-popup-buttons button">
             
                 <p>{latestItem.name}</p>
-                <p>Rs {latestItem.price}</p>
+                <p>Rs {latestItem.realPrice}</p>
+                <p>Rs {latestItem.discountPrice}</p>
                      <button
                         
                         onClick={() => decreaseQty(latestItem._id)}

@@ -120,8 +120,12 @@ const CheckoutPage = () => {
                 )}
                 <div className="card-body">
                   <h5 className="card-title">{item.name}</h5>
-                  <p className="text-success fw-semibold">Price: Rs. {item.price}</p>
-                  <p className="fw-semibold">Subtotal: Rs. {item.price * item.quantity}</p>
+        
+        <p className="fw-semibold">Size Taken:{item.selectedSize}</p>
+                  <p className="text-success fw-semibold">Price: Rs. {item.discountPrice}</p>
+                  
+                  <p className="fw-semibold">Subtotal: Rs. {item.discountPrice * item.quantity}</p>
+
                 </div>
               </div>
             ))}

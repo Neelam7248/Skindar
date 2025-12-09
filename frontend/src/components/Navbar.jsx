@@ -50,7 +50,8 @@ const { logOut} = useContext(CartContext); // ✅ from context
             <ul >
               <li onClick={() => handleCategoryClick("jackets")}>Jackets</li>
               <li onClick={() => handleCategoryClick("t-shirts")}>TShirts</li>
-            <li onClick={() => handleCategoryClick("caps")}>Caps</li>
+            <li onClick={() => handleCategoryClick("caps")}>Hoodies</li>
+            <li onClick={() => handleCategoryClick("jeans")}>Jeans</li>
           </ul>
           )}
         </li>

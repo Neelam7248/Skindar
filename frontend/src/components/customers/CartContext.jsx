@@ -11,7 +11,8 @@ export const CartProvider = ({ children }) => {
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState("");
   const [adminContacts, setAdminContacts] = useState([]);
-  
+  const [selectedSizes, setSelectedSizes] = useState({}); // productId -> size
+
   const navigate = useNavigate();
 const [orders, setOrders] = useState([]);
   // ➕ Add to Cart
@@ -62,7 +63,7 @@ const [orders, setOrders] = useState([]);
 
   // 💰 Total Price
   const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + item.discountPrice * item.quantity,
     0
   );
 
@@ -85,15 +86,30 @@ const fetchOrders = async () => {
   };
   
   const buyNowAll = () => {
-if (cartItems.length === 0) {
-      alert("Your cart is empty!");
+  if (cartItems.length === 0) {
+    alert("Your cart is empty!");
+    return;
+    
+  } else if (!isLoggedIn()) {
+    setTimeout(() => navigate("/signin"), 10);
+    return;
+  }
+for (let item of cartItems) {
+    if (!selectedSizes[item._id]) {
+      alert(`Please select a size for ${item.name}`);
       return;
-    } else if (!isLoggedIn()) {
-     setTimeout(() => navigate("/signin"), 10);  // Correct route// ← user logged in na ho to signup page
-      return;
-    } 
-    navigate("/checkout");
-   };
+    }
+  }
+  // Attach selected sizes to cartItems
+  const itemsWithSizes = cartItems.map((item) => ({
+    ...item,
+    selectedSize: selectedSizes[item._id] || null,
+  }));
+
+  // Save to context for checkout page
+  setCartItems(itemsWithSizes); // optional if cartItems are already in context
+  navigate("/checkout");
+};
 
 // 🧑‍💼 Fetch User Profile
   const fetchProfile = async () => {
@@ -204,7 +220,15 @@ const triggerAddToCartPopup = () => {
   setShowPopup(true);
   setTimeout(() => setShowPopup(false), 3000);
 };
- 
+
+//helper function to update selected size
+const updateSelectedSize = (productId, size) => {
+  setSelectedSizes((prev) => ({
+    ...prev,
+    [productId]: size,
+  }));
+};
+
 
   return (
     <CartContext.Provider
@@ -230,7 +254,10 @@ const triggerAddToCartPopup = () => {
         totalPrice,
         fetchAdminContact,
         adminContacts,
-setAdminContacts,      }}
+setAdminContacts, 
+updateSelectedSize,
+        selectedSizes,
+      }}
     >
       {children}
     </CartContext.Provider>

@@ -134,9 +134,9 @@
 /* Product Price */
 .product-price {
   font-size:14px;       /* chhota size, apni requirement ke hisab se adjust karein */
-  font-weight:lighter;         /* thin text */
+  font-weight:medium;         /* thin text */
       /* italic style */
-  color: #333;              /* text color */
+  color: #131313;              /* text color */
 }
 
 /* Buttons inside Card */

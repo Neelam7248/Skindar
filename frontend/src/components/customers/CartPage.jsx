@@ -13,10 +13,11 @@ function CartPage() {
     removeFromCart,
     totalPrice,
     clearCart,
+    selectedSizes,
+    updateSelectedSize,
   } = useContext(CartContext);
 
   const navigate = useNavigate();
-
   return (
     <div className="cart-page">
       <h2>Your Cart</h2>
@@ -50,7 +51,7 @@ function CartPage() {
 
                 {/* CARD BODY */}
                 <h6 className="card-title">{item.name}</h6>
-                <p className="price">Rs {item.price}</p>
+                <p className="price">Rs {item.discountPrice}</p>
 
                 {/* QUANTITY BUTTONS */}
                 <div className="qty-box">
@@ -58,8 +59,22 @@ function CartPage() {
                   <span className="qty-value">{item.quantity}</span>
                   <button className="qty-btn" onClick={() => increaseQty(item._id)}>+</button>
                 </div>
+<select
+  value={selectedSizes[item._id] || ""}
+  onChange={(e) => updateSelectedSize(item._id, e.target.value)}
+  required
+>
+  <option value=""> Please Select Size</option>
+  {Object.keys(item.sizes).map((size) => (
+    <option key={size} value={size}>
+      {size} ({item.sizes[size]} in stock)
+    </option>
+  ))}
+</select>
 
-                <p className="subtotal">Subtotal: Rs {item.price * item.quantity}</p>
+
+
+                <p className="subtotal">Subtotal: Rs {item.discountPrice * item.quantity}</p>
 
                 {/* REMOVE BUTTON */}
                 <button

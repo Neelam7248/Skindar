@@ -55,7 +55,7 @@ const ProductPage = () => {
     <p className="price-section">
       <del style={{ color: "#a00" }}>Rs 10000</del>
       <ins style={{ color: "green", marginLeft: "6px" }}>
-        Rs {product.price}
+        Rs {product.discountPrice}
       </ins>
     </p>
 

@@ -5,28 +5,29 @@ const Product = require("../models/Products");
 // ✅ Add Product
 router.post("/add", async (req, res) => {
   try {
-    const { name, description, price, category, gender, size, images, stock } = req.body;
+    const { name, description, realPrice, discountPrice, category, gender, sizes, images, stock } = req.body;
 
-    if (!name ||!description|| !price || !category || !gender|| !size || !images) {
+    if (!name || !description || !realPrice || !discountPrice || !category || !gender || !sizes || !images) {
       return res.status(400).json({ message: "Please fill all required fields." });
     }
 
     const newProduct = new Product({
       name,
       description,
-      price,
+      realPrice,
+      discountPrice,
       category,
       gender,
-      size,
+      sizes,
       images,
-    stock,
+      stock,
     });
 
     await newProduct.save();
     res.status(201).json({ message: "✅ Product added successfully!", product: newProduct });
   } catch (error) {
     console.error("Error adding product:", error);
-    res.status(500).json({ message: "Server error", error:error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 

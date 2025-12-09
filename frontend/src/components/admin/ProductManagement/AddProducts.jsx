@@ -1,237 +1,255 @@
-import React from "react"; // ✅ required for React.memo// src/components/admin/ProductManagement/AddProduct.jsx
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { ProductContext } from "./ProductContext";
+import "../../customers/CustomerRegister.css";
 
 function AddProduct() {
   const { addProduct } = useContext(ProductContext);
 
-  // Form state
   const [formData, setFormData] = useState({
     name: "",
-    price: "",
+    realPrice: "",
+    discountPrice: "",
     category: "",
     description: "",
-    gender:"",
-    size:"",
-    images: [] ,
-    stock: "", // ← add this// this will store the uploaded image URL or base64
+    gender: "",
+    images: [],
+    stock: "",
+    sizes: {
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+    },
   });
 
-  const [preview, setPreview] = useState(null);
   const [message, setMessage] = useState("");
- const categories = ["jackets", "shoes","t-shirts","caps"];
- const gender = [ "Male"];
- 
- // Handle text input change
+
+  const categories = ["jackets", "shoes", "t-shirts", "caps"];
+  const gender = ["Male"];
+
   const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSizeChange = (e) => {
+    const { name, value } = e.target;
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      sizes: {
+        ...formData.sizes,
+        [name]: Number(value),
+      },
     });
   };
 
-  // Handle image upload
   const handleImageChange = (e) => {
-  const files = Array.from(e.target.files);
-  const imageArray = [];
+    const files = Array.from(e.target.files);
+    const imageArray = [];
 
-  files.forEach((file) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      imageArray.push(reader.result);
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        imageArray.push(reader.result);
 
-      // when all images are read
-      if (imageArray.length === files.length) {
-        setFormData((prev) => ({
-          ...prev,
-          images: imageArray,
-        }));
+        if (imageArray.length === files.length) {
+          setFormData((prev) => ({
+            ...prev,
+            images: imageArray,
+          }));
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
 
-        setPreview(imageArray[0]); // show first image as preview
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-};
-
-  // Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Basic validation
-    if (!formData.name || !formData.price || !formData.category||!formData.images) {
+    // Required validation
+    if (
+      !formData.name ||
+      !formData.realPrice ||
+      !formData.discountPrice ||
+      !formData.category ||
+      !formData.description ||
+      !formData.gender ||
+      !formData.images.length
+    ) {
       setMessage("⚠️ Please fill all required fields");
       return;
     }
 
-    addProduct(formData); // Send data to context or backend
+    // Add product to context / backend
+    addProduct(formData);
+
     setMessage("✅ Product added successfully!");
 
-    // Reset form
+    // Reset form after submission
     setFormData({
       name: "",
-      price: "",
-      description: "",
+      realPrice: "",
+      discountPrice: "",
       category: "",
-      gender:"",
-      size:"",
+      description: "",
+      gender: "",
       images: [],
-      stock:"",
+      stock: "",
+      sizes: {
+        S: 0,
+        M: 0,
+        L: 0,
+        XL: 0,
+        XXL: 0,
+      },
     });
-    setPreview(null);
 
-    // Clear success message after 2 sec
     setTimeout(() => setMessage(""), 2000);
   };
 
   return (
-    <div style={{ maxWidth: "500px", margin: "auto" }}>
-      <h3>Add New Product</h3>
+    <div className="register-page">
+      <h2>Add New Product</h2>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "5px",
-          border: "1px solid #ddd",
-          padding: "20px",
-          borderRadius: "10px",
-        }}
-      >
-        <input
-          type="text"
-          name="name"
-          placeholder="Product Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
+      <div className="register-card">
+        <form onSubmit={handleSubmit}>
 
-<input
-          type="number"
-          name="price"
-          placeholder="Price (PKR)"
-          value={formData.price}
-          onChange={handleChange}
-          required
-        />
+          {/* Product Name */}
+          <input
+            type="text"
+            name="name"
+            placeholder="Product Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
 
-        {/* ✅ Category Dropdown */}
-        <select
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select Category</option>
-          {categories.map((cat, index) => (
-            <option key={index} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-        <input
-          type="text"
-          name="description"
-          placeholder="Product Description"
-          value={formData.description}
-          onChange={handleChange}
-          required
-        />
+          {/* Prices */}
+          <input
+            type="number"
+            name="realPrice"
+            placeholder="Real Price (PKR)"
+            value={formData.realPrice}
+            onChange={handleChange}
+            required
+          />
 
- 
-       <select
-          name="gender"
-          value={formData.gender}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select Gender</option>
-          {gender.map((gender, index) => (
-            <option key={index} value={gender}>
-              {gender}
-            </option>
-          ))}
-        </select>
-       
-<select
-  name="size"
-  value={formData.size}
-  onChange={handleChange}
-  required
->
-  <option value="">Select Size</option>
-  <option value="S">Small</option>
-  <option value="M">Medium</option>
-  <option value="L">Large</option>
-  <option value="XL">Extra Large</option>
-  <option value="XXL">Double Extra Large</option>
-</select>
+          <input
+            type="number"
+            name="discountPrice"
+            placeholder="Discount Price (PKR)"
+            value={formData.discountPrice}
+            onChange={handleChange}
+            required
+          />
 
+          {/* Category */}
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat, i) => (
+              <option key={i} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
 
-        {/* ✅ Image Upload Field */}
-        <input
-          type="file"
-          accept="image/*"
-           multiple   
-          onChange={handleImageChange}
-        />
+          {/* Description */}
+          <input
+            type="text"
+            name="description"
+            placeholder="Product Description"
+            value={formData.description}
+            onChange={handleChange}
+            required
+          />
 
-        {/* ✅ Preview Image */}
-{formData.images.length > 0 && (
-  <div
-    style={{
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "10px",
-      marginTop: "10px",
-    }}
-  >
-    {formData.images.map((img, index) => (
-      <img
-        key={index}
-        src={img}
-        alt={`Preview ${index + 1}`}
-        style={{
-          width: "80px",
-          height: "80px",
-          objectFit: "cover",
-          borderRadius: "5px",
-          border: "1px solid #ccc",
-        }}
-      />
-    ))}
-  </div>
-)}
+          {/* Gender */}
+          <select
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Gender</option>
+            {gender.map((g, i) => (
+              <option key={i} value={g}>
+                {g}
+              </option>
+            ))}
+          </select>
 
-<input
-  type="number"
-  name="stock"
-  placeholder="Stock Quantity"
-  value={formData.stock}
-  onChange={(e) =>
-    setFormData({ ...formData, stock: Number(e.target.value) })
-  }
-  required
-/>
+          {/* Sizes */}
+          <div style={{ marginTop: "10px" }}>
+            <label>Respectively S,M,L,XL,XXL Sizes (Add Stock for each size):</label>
 
-        <button
-          type="submit"
-          style={{
-            backgroundColor: "#0077b6",
-            color: "white",
-            padding: "10px",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer"
-          }}
-        >
-          Add Product
-        </button>
-      </form>
+            <div className="sizes-grid">
+              {["S", "M", "L", "XL", "XXL"].map((size) => (
+                <input
+                  key={size}
+                  type="number"
+                  name={size}
+                  placeholder={size}
+                  value={formData.sizes[size]}
+                  onChange={handleSizeChange}
+                />
+              ))}
+            </div>
+          </div>
 
-      {message && <p style={{ color: "green", marginTop: "10px" }}>{message}</p>}
+          {/* Images */}
+          <input type="file" accept="image/*" multiple onChange={handleImageChange} />
+
+          {formData.images.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "10px",
+                marginTop: "10px",
+              }}
+            >
+              {formData.images.map((img, index) => (
+                <img
+                  key={index}
+                  src={img}
+                  alt="preview"
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    objectFit: "cover",
+                    borderRadius: "5px",
+                    border: "1px solid #ccc",
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Stock */}
+          <input
+            type="number"
+            name="stock"
+            placeholder="Total Stock"
+            value={formData.stock}
+            onChange={(e) =>
+              setFormData({ ...formData, stock: Number(e.target.value) })
+            }
+            required
+          />
+
+          <button type="submit">Add Product</button>
+        </form>
+
+        {message && (
+          <p style={{ color: "green", marginTop: "10px" }}>{message}</p>
+        )}
+      </div>
     </div>
   );
 }
