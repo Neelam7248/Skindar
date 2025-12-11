@@ -29,7 +29,7 @@ function CartPage() {
         <address>
           Address: Shop no 1, United Plaza, nearest Levis factory outlet
         </address>
-        <p>Skindar Javeid</p>
+        <p>Sikandar Javeid</p>
         <p>Contact No:0323-6667743</p>
       </footer></>
 

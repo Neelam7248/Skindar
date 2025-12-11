@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { CustomerContext } from "../CustomerManagement/CustomerContext";
-import "./CustomerList.css"; // CSS file for styling
+import "../../customers/Home.css"; // CSS file for styling
 
 export default function CustomerList() {
   const {

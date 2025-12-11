@@ -14,6 +14,7 @@ import CartPage from './components/customers/CartPage';
 import OrderHistory from './components/customers/OrderHistory';
 import Profile from './components/customers/Profile';
 import ForgotPassword from './components/customers/ForgetPassword';
+import ContactUs from './components/customers/ContactUs';
 function App() {
   return (
   <>
@@ -32,6 +33,7 @@ function App() {
  <Route path="orders" element={<OrderHistory />} />
  <Route path="/cartpage" element={<CartPage />} />
  <Route path="/profile" element={<Profile />} />
+ <Route path="/about" element={<ContactUs />} />
  
  <Route path="/forgetpassword" element={<ForgotPassword />} />
 

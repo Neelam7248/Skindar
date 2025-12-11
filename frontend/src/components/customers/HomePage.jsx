@@ -4,7 +4,7 @@ import { ProductContext } from "../../components/admin/ProductManagement/Product
 import { CartContext } from "./CartContext";
 import CartPage from "./CartPage";
 import "./Home.css";
-import "./CartPopup.css"; // Add popup styles
+
 
 function Home() {
   const { products, fetchProducts, loading, error } = useContext(ProductContext);

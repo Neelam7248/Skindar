@@ -126,6 +126,17 @@
   gap: 15px;
 }
 
+.product-card-container {
+  width: 100%;
+  margin: 3px auto 0 auto;
+  text-align: center;
+  background: rgb(83, 105, 126);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 10px;
+  box-sizing: border-box; /* ensure padding included in width */
+}
+
 .product-card {
   background: white;
   padding: 12px;

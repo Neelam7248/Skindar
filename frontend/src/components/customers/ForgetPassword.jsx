@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import "./ForgetPassword.css"; // import CSS file
+import "./CustomerRegister.css"; // Use existing register CSS
 
 export default function ForgotPassword() {
   const [step, setStep] = useState(1);
@@ -51,8 +51,8 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="fp-container">
-      <div className="fp-card">
+    <div className="register-page">
+      <div className="register-card" style={{ maxWidth: "500px" }}>
         <h2>Forgot Password</h2>
 
         {/* Step 1 */}
@@ -94,7 +94,6 @@ export default function ForgotPassword() {
         {/* Step 3 */}
         {step === 3 && (
           <div className="fp-form">
-
             {/* Password Field with Show/Hide Button */}
             <div className="fp-password-wrapper">
               <input

@@ -4,7 +4,7 @@ import "../../customers/CustomerRegister.css";
 
 function AddProduct() {
   const { addProduct } = useContext(ProductContext);
-
+  const sizes = ["S", "M", "L", "XL", "XXL"];
   const [formData, setFormData] = useState({
     name: "",
     realPrice: "",
@@ -25,24 +25,19 @@ function AddProduct() {
 
   const [message, setMessage] = useState("");
 
-  const categories = ["jackets", "shoes", "t-shirts", "caps"];
+  const categories = ["jackets", "shoes", "t-shirts", ""];
   const gender = ["Male"];
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSizeChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
-      sizes: {
-        ...formData.sizes,
-        [name]: Number(value),
-      },
-    });
-  };
+ const handleSizeChange = (size, value) => {
+  setFormData({
+    ...formData,
+    sizes: { ...formData.sizes, [size]: Number(value) },
+  });
+};
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -184,23 +179,23 @@ function AddProduct() {
             ))}
           </select>
 
-          {/* Sizes */}
-          <div style={{ marginTop: "10px" }}>
-            <label>Respectively S,M,L,XL,XXL Sizes (Add Stock for each size):</label>
-
-            <div className="sizes-grid">
-              {["S", "M", "L", "XL", "XXL"].map((size) => (
-                <input
-                  key={size}
-                  type="number"
-                  name={size}
-                  placeholder={size}
-                  value={formData.sizes[size]}
-                  onChange={handleSizeChange}
-                />
-              ))}
-            </div>
-          </div>
+         <div>
+  <label>Quantity by Size:</label>
+  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "5px" }}>
+    {sizes.map((s) => (
+      <div key={s} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <span>{s}</span>
+        <input
+          type="number"
+          min="0"
+          value={formData.sizes[s]}
+          onChange={(e) => handleSizeChange(s, e.target.value)}
+          style={{ width: "60px", textAlign: "center" }}
+        />
+      </div>
+    ))}
+  </div>
+</div>
 
           {/* Images */}
           <input type="file" accept="image/*" multiple onChange={handleImageChange} />

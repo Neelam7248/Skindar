@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { OrderContext } from "./OrderContext";
-import "./UserOrder.css"; // Separate CSS
+import "../../customers/Home.css"; // Separate CSS
 
 export default function UserOrders({ email }) {
   const { orders, updateOrderStatus, fetchUserOrders } = useContext(OrderContext);

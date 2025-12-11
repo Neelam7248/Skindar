@@ -61,6 +61,8 @@ const { logOut} = useContext(CartContext); // ✅ from context
         <li><Link to="/profile" onClick={() => setIsOpen(false)}><FaUser /> Profile</Link></li>
         <li><Link to="/signin" onClick={() => setIsOpen(false)}><FaSignInAlt /> Signin</Link></li>
         <li><Link to="/register" onClick={() => setIsOpen(false)}><FaInfoCircle /> Register</Link></li>
+       <li><Link to="/about" onClick={() => setIsOpen(false)}><FaInfoCircle /> Contact US</Link></li>
+       
        <li>
           <button 
             onClick={() => logOut()} 

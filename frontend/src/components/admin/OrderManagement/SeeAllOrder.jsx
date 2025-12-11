@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from "react";
 import { OrderContext } from "../OrderManagement/OrderContext";
-import "./OrderManagement.css";
+import "../../customers/Home.css";
 
 const OrderManagement = () => {
   const { orders, fetchAllOrders, updateOrderStatus } = useContext(OrderContext);

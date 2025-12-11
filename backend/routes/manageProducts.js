@@ -43,7 +43,7 @@ router.get("/", async (req, res) => {
 });
 
 // ✏️ Update Product
-router.put("/update/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
@@ -63,7 +63,7 @@ router.put("/update/:id", async (req, res) => {
 });
 
 // ❌ Delete Product
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);
 

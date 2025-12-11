@@ -1,5 +1,5 @@
-import React from "react"; // ✅ required for React.memo// src/components/admin/ProductManagement/DeleteProduct.jsx
-import { useState, useContext } from "react";
+// src/components/admin/ProductManagement/DeleteProduct.jsx
+import React, { useState, useContext } from "react";
 import { ProductContext } from "./ProductContext";
 
 function DeleteProduct() {
@@ -14,14 +14,14 @@ function DeleteProduct() {
       setMessage("⚠️ Select a product first!");
       return;
     }
-    deleteProduct(selectedId); // delete from context/backend
+    deleteProduct(selectedId);
     setMessage("✅ Product deleted successfully!");
-    setSelectedId(""); // reset dropdown
+    setSelectedId("");
     setTimeout(() => setMessage(""), 2000);
   };
 
   return (
-    <div style={{ maxWidth: "500px", margin: "auto" }}>
+    <div className="register-page">
       <h3>Delete Product</h3>
 
       {/* Select Product */}
@@ -40,30 +40,33 @@ function DeleteProduct() {
 
       {/* Display selected product info */}
       {selectedProduct && (
-        <div
-          style={{
-            border: "1px solid #ddd",
-            borderRadius: "8px",
-            padding: "10px",
-            marginBottom: "10px",
-            textAlign: "left",
-            display: "flex",
-            gap: "10px",
-          }}
-        >
-          {selectedProduct.image && (
-            <img
-              src={selectedProduct.image}
-              alt={selectedProduct.name}
-              style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "5px" }}
-            />
-          )}
+        <div className="register-card" style={{ padding: "15px" }}>
+          {/* Images */}
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "10px" }}>
+            {selectedProduct.images?.map((img, index) => (
+              <img
+                key={index}
+                src={img}
+                alt={`product-${index}`}
+                style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "5px" }}
+              />
+            ))}
+          </div>
+
+          <p><strong>Name:</strong> {selectedProduct.name}</p>
+          <p><strong>Category:</strong> {selectedProduct.category}</p>
+          <p><strong>Price:</strong> {selectedProduct.price} PKR</p>
+
+          {/* Sizes */}
           <div>
-            <p><strong>Name:</strong> {selectedProduct.name}</p>
-            <p><strong>Category:</strong> {selectedProduct.category}</p>
-            <p><strong>Size:</strong> {selectedProduct.size}</p>
-            <p><strong>Price:</strong> {selectedProduct.price} PKR</p>
-            <p><strong>Stock:</strong> {selectedProduct.stock}</p>
+            <strong>Stock by Size:</strong>
+            <ul>
+              {Object.entries(selectedProduct.sizes || {}).map(([size, qty]) => (
+                <li key={size}>
+                  {size}: {qty}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       )}
@@ -78,6 +81,7 @@ function DeleteProduct() {
           borderRadius: "5px",
           cursor: "pointer",
           width: "100%",
+          marginTop: "10px",
         }}
       >
         Delete Product

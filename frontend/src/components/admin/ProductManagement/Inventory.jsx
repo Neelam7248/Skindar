@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import React from "react"; // ✅ required for React.memo
+import React from "react";
+import "../../customers/Home.css"; // Apply your CSS
+
 function AdminInventory() {
   const [inventory, setInventory] = useState(null);
 
@@ -19,46 +21,47 @@ function AdminInventory() {
   if (!inventory) return <p>Loading...</p>;
 
   return (
-    <div style={{ padding: "20px", maxWidth: "800px", margin: "auto" }}>
-      <h2 style={{ border: "1px solid #101010ff",backgroundColor:"powderblue", padding: "8px" }}>Admin Inventory Dashboard</h2>
+    <div className="home-container" style={{ padding: "2px" }}>
+      <h2>Admin Inventory Dashboard</h2>
       <p><strong>Total Products:</strong> {inventory.totalProducts}</p>
       <p><strong>Total Stock:</strong> {inventory.totalStock}</p>
 
-      <h3 style={{ border: "1px solid #101010ff",backgroundColor:"powderblue", padding: "8px" }}>Products List:</h3>
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          marginTop: "20px",
-        }}
-      >
-        <thead>
-          <tr>
-            <th style={{ border: "1px solid #101010ff",backgroundColor:"powderblue", padding: "8px" }}>Name</th>
-            <th style={{ border: "1px solid #181717ff",backgroundColor:"powderblue", padding: "8px" }}>Category</th>
-            <th style={{ border: "1px solid #060606ff", backgroundColor:"powderblue",padding: "8px" }}>Gender</th>
-            <th style={{ border: "1px solid #050505ff", backgroundColor:"powderblue",padding: "8px" }}>Size</th>
-            <th style={{ border: "1px solid #000000ff", backgroundColor:"powderblue",padding: "8px" }}>Price (PKR)</th>
-            <th style={{ border: "1px solid #050505ff", backgroundColor:"powderblue",padding: "8px" }}>Description</th>
+      <div className="product-grids">
+        {inventory.products.map((product) => (
+          <div key={product._id} className="product-card">
+            {/* Product Image */}
+           <p  className="product-id"> ProductId:<br/>{product._id}
+            <br/></p>
+    
+            {product.images && product.images.length > 0 && (
+              <img src={product.images[0]} alt={product.name} />
+            )}
+
+            {/* Product Info */}
+            <h6>{product.name}</h6>
+            <p className="product-price">{product.price} PKR</p>
+            <p><strong>Category:</strong> {product.category}</p>
+            <p><strong>Gender:</strong> {product.gender}</p>
+            <p>
+              <strong>Sizes:</strong>{" "}
+              {product.sizes
+                ? Object.entries(product.sizes)
+                    .map(([size, qty]) => `${size}:${qty}`)
+                    .join(", ")
+                : "-"}
+            </p>
+            <p>
+              <strong>Total Stock:</strong>{" "}
+              {product.sizes
+                ? Object.values(product.sizes).reduce((a, b) => a + b, 0)
+                : product.stock || 0}
+            </p>
+            <p>Des:{product.description}</p>
+
             
-            <th style={{ border: "1px solid #020202ff", backgroundColor:"powderblue",padding: "8px" }}>Stock</th>
-          </tr>
-        </thead>
-        <tbody>
-          {inventory.products.map((product) => (
-            <tr key={product._id}>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>{product.name}</td>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>{product.category}</td>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>{product.gender}</td>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>{Array.isArray(product.size) ? product.size.join(", ") : product.size}</td>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>{product.price}</td>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>{product.description}</td>
-              
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>{product.stock}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

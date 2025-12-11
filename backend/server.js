@@ -33,6 +33,8 @@ app.use('/api/products',require('./routes/manageProducts'));
 app.use('/api/orders', require('./routes/orderR'));
 app.use('/api/admin',require('./routes/adminR'));
 app.use('/api/create-admin',require('./routes/createAdminR'));
+app.use('/api/contact',require('./routes/ContactR'));
+
 const PORT=process.env.PORT||5000;
 const DATABASE_URL=process.env.DATABASE_URL;
 
