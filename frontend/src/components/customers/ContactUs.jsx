@@ -10,7 +10,7 @@ function ContactForm() {
     subject: "",
     message: "",
   });
-
+const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
   const [status, setStatus] = useState("");
 
   const handleChange = (e) => {
@@ -28,7 +28,7 @@ const handleSubmit = async (e) => {
   }
 
   try {
-    const res = await axios.post("http://localhost:5000/api/contact", formData);
+    const res = await axios.post(`{backendURL}/api/contact`, formData);
     if (res.status === 200) {
       setStatus("✅ Message sent successfully .Response to your querry can take 12days!");
       setFormData({ name: "", email: "", subject: "", message: "" });

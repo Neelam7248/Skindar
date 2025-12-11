@@ -5,12 +5,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getToken } from "../utils/auth";
 import "./CheckoutPage.css";
-
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const { cartItems, totalPrice, profile, fetchProfile, clearCart } = useContext(CartContext);
   const [message, setMessage] = useState("");
-
+const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -74,7 +73,7 @@ const CheckoutPage = () => {
         }
 
         await axios.post(
-          "http://localhost:5000/api/orders",
+          `${backendURL}/api/orders`,
           orderDetails,
           {
             headers: { Authorization: `Bearer ${token}` },

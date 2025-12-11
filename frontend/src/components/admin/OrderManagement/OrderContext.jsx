@@ -6,11 +6,11 @@ export const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
-
+const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
   const fetchAllOrders = async () => {
     try {
       const token = getToken();
-      const res = await axios.get("http://localhost:5000/api/orders", {
+      const res = await axios.get(`${backendURL}/api/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log("Fetched Orders:", res.data);
@@ -24,7 +24,7 @@ export const OrderProvider = ({ children }) => {
     try {
       const token = getToken();
       const res = await axios.put(
-        `http://localhost:5000/api/orders/${orderId}/status`,
+        `${backendURL}/api/orders/${orderId}/status`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -39,7 +39,7 @@ export const OrderProvider = ({ children }) => {
 const fetchUserOrders = async (email) => {
   try {
     const token = getToken();
-    const res = await axios.get(`http://localhost:5000/api/orders`, {
+    const res = await axios.get(`${backendURL}/api/orders`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 console.log("Fetched User Orders:", res.data);

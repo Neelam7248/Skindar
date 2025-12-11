@@ -8,7 +8,7 @@ export const CustomerContext = createContext();
 export default function CustomerProvider({ children }) {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
-
+const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
   // ============================
   // 1. Fetch All Customers
   // ============================
@@ -17,7 +17,7 @@ export default function CustomerProvider({ children }) {
 
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/auth/users", {
+      const res = await axios.get(`${backendURL}/api/auth/users`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
 console.log("frontend receives cusomer data",res.data);
@@ -38,7 +38,7 @@ console.log("frontend receives cusomer data",res.data);
 
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/auth/users/search?query=${query}`,
+        `${backendURL}/api/auth/users/search?query=${query}`,
         {
           headers: { Authorization: `Bearer ${getToken()}` },
         }
@@ -59,7 +59,7 @@ console.log("frontend receives cusomer data",res.data);
 
   try {
     await axios.put(
-      `http://localhost:5000/api/auth/users/${customerId}/soft-delete`,
+      `${backendURL}/api/auth/users/${customerId}/soft-delete`,
       {},   // body empty
       {
         headers: {
@@ -78,7 +78,7 @@ console.log("frontend receives cusomer data",res.data);
   const restoreCustomer = async (customerId) => {
   try {
     await axios.put(
-      `http://localhost:5000/api/auth/users/${customerId}/restore`,
+      `${backendURL}/api/auth/users/${customerId}/restore`,
       {},
       { headers: { Authorization: `Bearer ${getToken()}` } }
     );

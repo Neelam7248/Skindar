@@ -3,13 +3,12 @@ import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { saveAuthData } from "../utils/auth";
 import "./customers/CustomersRegister"; // ✅ Aapki CSS file
-
 function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false); // password toggle
-
+const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || "/cartpage";
@@ -17,7 +16,7 @@ function Signin() {
   const handleSignin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/signin", {
+      const res = await axios.post(`${backendURL}/api/auth/signin`, {
         email,
         password,
       });

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import "./CustomerRegister.css"; // Use existing register CSS
-
 export default function ForgotPassword() {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
@@ -10,11 +9,11 @@ export default function ForgotPassword() {
   const [newEPassword, setNewEPassword] = useState("");
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
+const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
   // Step 1: Send OTP
   const handleSendOTP = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/send-otp", { email });
+      const res = await axios.post( `${backendURL}/api/auth/send-otp`, { email });
       setMessage(res.data.message);
       setStep(2);
     } catch (err) {
@@ -25,7 +24,7 @@ export default function ForgotPassword() {
   // Step 2: Verify OTP
   const handleVerifyOTP = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/verify-forgot-otp", { email, otp });
+      const res = await axios.post(`{backendURL}/api/auth/verify-forgot-otp`, { email, otp });
       setMessage(res.data.message);
       setStep(3);
     } catch (err) {
@@ -36,7 +35,7 @@ export default function ForgotPassword() {
   // Step 3: Reset Password
   const handleResetPassword = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/reset-password", {
+      const res = await axios.post(`{backendURL}/api/auth/reset-password`, {
         email,
         otp,
         newPassword,

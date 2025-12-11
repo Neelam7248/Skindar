@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import OTPVerification from "./OTPverificationForm"; // OTP component
 import "./CustomerRegister.css";
+//
 function CustomerRegister() {
   const navigate = useNavigate();
 
@@ -14,7 +15,7 @@ function CustomerRegister() {
     address: "",
     userType: "customer",
   });
-
+const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
   const [otpSent, setOtpSent] = useState(false);
 
   const handleChange = (e) => {
@@ -24,7 +25,7 @@ function CustomerRegister() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/auth/signup", formData);
+      await axios.post(`${backendURL}/api/auth/signup`, formData);
 
       // OTP generate ho chuka → show OTP input
       setOtpSent(true);

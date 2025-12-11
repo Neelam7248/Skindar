@@ -5,11 +5,11 @@ import "../../customers/Home.css"; // Apply your CSS
 
 function AdminInventory() {
   const [inventory, setInventory] = useState(null);
-
+const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/products/inventory");
+        const res = await axios.get(`{backendURL}/api/products/inventory`);
         setInventory(res.data);
       } catch (error) {
         console.error("Error fetching inventory:", error);

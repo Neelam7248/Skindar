@@ -10,7 +10,7 @@ function AdminCreateAdmin() {
     phone: "",
     userType: "admin",
   });
-
+const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
   const [step, setStep] = useState(1); // Step 1: Signup, Step 2: OTP Verification
   const [otp, setOtp] = useState("");
   const [adminId, setAdminId] = useState(null);
@@ -26,7 +26,7 @@ function AdminCreateAdmin() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        "http://localhost:5000/api/create-admin",
+        `${backendURL}/api/create-admin`,
         adminData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -43,7 +43,7 @@ function AdminCreateAdmin() {
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/create-admin/verify-otp", {
+      await axios.post(`${backendURL}/api/create-admin/verify-otp`, {
         email: adminData.email,
         otp,
       });

@@ -12,7 +12,7 @@ export const CartProvider = ({ children }) => {
   const [profileError, setProfileError] = useState("");
   const [adminContacts, setAdminContacts] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState({}); // productId -> size
-
+const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
   const navigate = useNavigate();
 const [orders, setOrders] = useState([]);
   // ➕ Add to Cart
@@ -73,7 +73,7 @@ const fetchOrders = async () => {
       const token = getToken();
       if (!token) return; // user not logged in
 
-      const res = await axios.get("http://localhost:5000/api/orders", {
+      const res = await axios.get(`{backendURL}/api/orders`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -129,7 +129,7 @@ for (let item of cartItems) {
         setProfileLoading(false);
         return;
       }
-      const res = await axios.get("http://localhost:5000/api/auth/profile", {
+      const res = await axios.get(`{backendURL}/api/auth/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -158,7 +158,7 @@ const logOut = () => {
   try {
     const token = getToken();
 
-    const res = await axios.get("http://localhost:5000/api/admin/contact", {
+    const res = await axios.get(`{backendURL}/api/admin/contact`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -194,7 +194,7 @@ const updateProfile = async (updatedData) => {
 
     // Send PUT request to update profile
     const res = await axios.put(
-      "http://localhost:5000/api/auth/UPprofile", 
+      `{backendURL}/api/auth/UPprofile`, 
       updatedData,
       {
         headers: {

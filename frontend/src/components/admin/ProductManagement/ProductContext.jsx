@@ -10,7 +10,8 @@ const [loading, setLoading] = useState(false);
 const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState([]); // 🆕 for dropdown
 const [selectedCategoryProducts,setSelectedCategoryProducts]=useState([]);
-  // Fetch products on load
+const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000"; 
+// Fetch products on load
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -20,7 +21,7 @@ const handleCategorySelect = async (category) => {
   setError(null);
   try {
     const res = await axios.get(
-      `http://localhost:5000/api/products/byCategory?category=${category}`
+      `${backendURL}/api/products/byCategory?category=${category}`
     );
     console.log("frontend received data", res.data);
 
@@ -41,7 +42,7 @@ const handleCategorySelect = async (category) => {
     setLoading(true);
 setError(null);
     try {
-      const res = await axios.get("http://localhost:5000/api/products");
+      const res = await axios.get(`${backendURL}/api/products`);
      console.log("frontend received data",res.data);
       setProducts(res.data);
     } catch (error) {
@@ -57,7 +58,7 @@ setError(null);
  setLoading(true);
 setError(null);
     try {
-      const res = await axios.post("http://localhost:5000/api/products/add", newProduct);
+      const res = await axios.post(`${backendURL}/api/products/add`, newProduct);
     console.log("frontend received data", res.data);
       setProducts(prev => [...prev, res.data]);
   return res.data; 
@@ -73,7 +74,7 @@ setError(null);
     setLoading(true);
 setError(null);
     try {
-      const res = await axios.put(`http://localhost:5000/api/products/${id}`, updatedProduct);
+      const res = await axios.put(`${backendURL}/api/products/${id}`, updatedProduct);
  setProducts(prev => prev.map(p => (p._id === id ? res.data : p)));
     } catch (error) {
       console.error("Error updating product:", error);
@@ -88,7 +89,7 @@ const deleteProduct = async (id) => {
   setError(null);
 
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      await axios.delete(`${backendURL}/api/products/${id}`);
       setProducts(products.filter(p => p._id !== id));
     } catch (error) {
       console.error("Error deleting product:", error);
