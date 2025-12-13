@@ -145,7 +145,9 @@
 ================================*/
 button {
   appearance: none;
-  border: none;
+      border-left: 11px solid #0077b6;
+  border: all;
+  border-radius:10px;
   outline: none;
   background: transparent;
   color: inherit;

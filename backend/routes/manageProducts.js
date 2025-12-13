@@ -117,7 +117,7 @@ router.get("/byCategory", async (req, res) => {
     const products = await Product.find({ category });
 
     if (products.length === 0) {
-      return res.status(404).json({ message: `No products found in category.All are sold: ${category}` });
+      return res.status(404).json({ message: `New products are comming soon in this category.All ${category} are sold . ` });
     }
 
     res.status(200).json(products);

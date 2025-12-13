@@ -64,7 +64,7 @@ function CartPage() {
   onChange={(e) => updateSelectedSize(item._id, e.target.value)}
   required
 >
-  <option value=""> Please Select Size</option>
+  <option value="">Size select </option>
   {Object.keys(item.sizes).map((size) => (
     <option key={size} value={size}>
       {size} ({item.sizes[size]} in stock)

@@ -66,7 +66,7 @@ export default function CustomerList() {
                 </span>
               </p>
               <div className="customer-card-actions">
-                <button className="btn btn-sm btn-primary" onClick={() => openProfile(user)}>View</button>
+                <button onClick={() => openProfile(user)}>View</button>
                 
                 {user.isActive ? (
                   <button

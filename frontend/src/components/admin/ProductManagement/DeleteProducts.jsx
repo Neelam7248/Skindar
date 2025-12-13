@@ -33,7 +33,7 @@ function DeleteProduct() {
         <option value="">Select Product</option>
         {products.map((p) => (
           <option key={p._id} value={p._id}>
-            {p.name}
+            {p.category},{p.name},stock:{p.stock}
           </option>
         ))}
       </select>

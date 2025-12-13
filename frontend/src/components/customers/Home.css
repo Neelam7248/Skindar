@@ -327,8 +327,7 @@ h3 {
     font-size: 0.8rem;
     padding: 6px 4px;
   }
-}
-.cart-popup-overlay {
+}.cart-popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -339,6 +338,7 @@ h3 {
   justify-content: center;
   align-items: center;
   z-index: 999999;
+        /* Rounded corners */
 }
 
 .cart-popup {
@@ -346,10 +346,15 @@ h3 {
   padding: 20px;
   width: 90%;
   max-width: 350px;
+  border-top: 2px solid #847f7fff;
+  border-right: 2px solid #847f7fff;
+  border-bottom: 2px solid #847f7fff;
+  border-left: 5px solid #6972eaff; /* left highlighted */
   border-radius: 10px;
   text-align: center;
   animation: popupScale 0.3s ease-in-out;
   box-shadow: 0px 4px 20px rgba(0,0,0,0.4);
+  box-sizing: border-box; /* ensure padding doesn't break width */
 }
 
 .cart-popup-item {
@@ -371,7 +376,7 @@ h3 {
     margin: 0;
   padding: 6px 12px;
   border: none;
-  background: rgb(190, 189, 194);
+  background: #6972eaff;
   color: white;
   border-radius: 5px;
   cursor: pointer;

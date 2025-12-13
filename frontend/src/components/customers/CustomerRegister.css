@@ -142,3 +142,29 @@
     max-width: 400px;
   }
 }
+/* Target your select element */
+select {
+  width: 80%;                  /* Make it 80% of container */
+  margin: 3px auto 0;         /* Top 30px, center horizontally */
+  padding: 2px;               /* Inner spacing */
+  text-align: center;          /* Center the selected text */
+  background-color: #f8f9fa;   /* Light gray background */
+  border-radius: 10px;         /* Rounded corners */
+  border: 1px solid #888;      /* Border color */
+  font-size: 16px;             /* Adjust font size */
+  cursor: pointer;             /* Show pointer on hover */
+  display: block;              /* Block to respect width & margin auto */
+  box-sizing: border-box;      /* Include padding in width */
+}
+
+/* Optional: hover effect */
+select:hover {
+  background-color: #e9ecef;   /* Slightly darker on hover */
+}
+
+/* Optional: focus effect */
+select:focus {
+  outline: none;               /* Remove default outline */
+  border-color: #555;          /* Highlight border */
+  background-color: #f1f3f5;   /* Slightly darker background */
+}
