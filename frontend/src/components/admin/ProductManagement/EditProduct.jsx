@@ -6,8 +6,8 @@ import "../../customers/CustomerRegister.css";
 function EditProduct() {
   const { products, editProduct } = useContext(ProductContext);
   const sizes = ["S", "M", "L", "XL", "XXL"];
-  const categories = ["jackets", "t-shirts", "shoes", "caps"];
-  const genders = ["Male", "Female"];
+ const categories = ["jackets", "shirts", "t-shirts", "pants","jeans","hoddies","suits","caps"];
+   const genders = ["Male", "Female"];
 
   const [selectedId, setSelectedId] = useState("");
   const [formData, setFormData] = useState({

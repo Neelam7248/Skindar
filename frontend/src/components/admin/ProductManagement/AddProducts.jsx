@@ -25,7 +25,7 @@ function AddProduct() {
 
   const [message, setMessage] = useState("");
 
-  const categories = ["jackets", "shoes", "t-shirts", ""];
+  const categories = ["jackets", "shirts", "t-shirts", "pants","jeans","hoddies","suits","caps"];
   const gender = ["Male"];
 
   const handleChange = (e) => {

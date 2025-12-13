@@ -49,9 +49,15 @@ const { logOut} = useContext(CartContext); // ✅ from context
           {isDropdownOpen && (
             <ul >
               <li onClick={() => handleCategoryClick("jackets")}>Jackets</li>
-              <li onClick={() => handleCategoryClick("t-shirts")}>TShirts</li>
-            <li onClick={() => handleCategoryClick("caps")}>Hoodies</li>
+              <li onClick={() => handleCategoryClick("shirts")}>Shirts</li>
+            <li onClick={() => handleCategoryClick("caps")}>Caps</li>
             <li onClick={() => handleCategoryClick("jeans")}>Jeans</li>
+            <li onClick={() => handleCategoryClick("shirts")}>Shirts</li>
+            <li onClick={() => handleCategoryClick("hoodies")}>Hoodies</li>
+            <li onClick={() => handleCategoryClick("pants")}>Pants</li>
+            <li onClick={() => handleCategoryClick("suits")}>Suits</li>
+            
+                        
           </ul>
           )}
         </li>

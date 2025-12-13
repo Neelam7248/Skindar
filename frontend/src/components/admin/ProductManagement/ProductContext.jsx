@@ -10,7 +10,7 @@ const [loading, setLoading] = useState(false);
 const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState([]); // 🆕 for dropdown
 const [selectedCategoryProducts,setSelectedCategoryProducts]=useState([]);
-const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000"; 
+const backendURL = process.env.REACT_APP_API_BACKEND_URL; 
 // Fetch products on load
   useEffect(() => {
     fetchProducts();
@@ -20,17 +20,15 @@ const handleCategorySelect = async (category) => {
   setLoading(true);
   setError(null);
   try {
-    const res = await axios.get(
-      `${backendURL}/api/products/byCategory?category=${category}`
-    );
+    const res = await axios.get(`${backendURL}/api/products/byCategory?category=${category}`);
     console.log("frontend received data", res.data);
 
-    // Overwrite products with selected category only
     setSelectedCategoryProducts(res.data);
-    setSelectedCategory(category); // optional: track selected category
+    setSelectedCategory(category);
   } catch (err) {
+    console.error(err);
     setError(err.response?.data?.message || "Failed to fetch category products");
-    setProducts([]); // reset products on error
+    setSelectedCategoryProducts([]);
   } finally {
     setLoading(false);
   }
