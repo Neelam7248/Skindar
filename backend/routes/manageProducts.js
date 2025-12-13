@@ -108,7 +108,7 @@ router.get("/byCategory", async (req, res) => {
     category = category.toLowerCase();
 
     // Only allow valid categories
-    const validCategories = ["jackets", "t-shirts", "shoes", "caps"];
+    const validCategories = ["jackets", "t-shirts", "jeans", "caps","shirts","pants","suits","hoodies"];
     if (!validCategories.includes(category)) {
       return res.status(400).json({ message: "Invalid category" });
     }
@@ -117,7 +117,7 @@ router.get("/byCategory", async (req, res) => {
     const products = await Product.find({ category });
 
     if (products.length === 0) {
-      return res.status(404).json({ message: `No products found in category: ${category}` });
+      return res.status(404).json({ message: `No products found in category.All are sold: ${category}` });
     }
 
     res.status(200).json(products);

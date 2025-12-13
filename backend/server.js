@@ -7,7 +7,9 @@ const Product = require("./models/Products");
 const products = require("./routes/utils/seedProducts");
 
 // Middleware
-app.use(cors());
+app.use(cors()); // ya agar specific domain:
+app.use(cors({ origin: 'http://localhost:3000' }));
+
 app.use(express.json({ limit: "10mb" })); // increase as needed
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 const passport = require('passport');
