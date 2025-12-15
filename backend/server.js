@@ -7,8 +7,14 @@ const Product = require("./models/Products");
 const products = require("./routes/utils/seedProducts");
 
 // Middleware
-app.use(cors()); // ya agar specific domain:
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({
+  origin: [
+    "https://denimstudio.netlify.app",
+    "http://localhost:3000"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
 app.use(express.json({ limit: "10mb" })); // increase as needed
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
