@@ -1,29 +1,63 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/Products");
+const multer = require("multer");
+const sharp = require("sharp");
+const path = require("path");
 
-// ✅ Add Product
-router.post("/add", async (req, res) => {
+// Configure multer storage
+const storage = multer.memoryStorage(); // store files in memory
+const upload = multer({ storage: storage });
+
+// Serve uploads folder statically in your main server file
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Add Product with image upload
+router.post("/add", upload.array("images", 5), async (req, res) => {
   try {
-    const { name, description, realPrice, discountPrice, category, gender, sizes, images, stock } = req.body;
+    const { name, description, realPrice, discountPrice, category, gender, sizes, stock } = req.body;
 
-    if (!name || !description || !realPrice || !discountPrice || !category || !gender || !sizes || !images) {
+    if (!name || !description || !realPrice || !discountPrice || !category || !gender || !sizes) {
       return res.status(400).json({ message: "Please fill all required fields." });
     }
 
-    const newProduct = new Product({
-      name,
-      description,
-      realPrice,
-      discountPrice,
-      category,
-      gender,
-      sizes,
-      images,
-      stock,
-    });
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "No images uploaded" });
+    }
+
+    // Process & compress images
+    const compressedImages = [];
+    for (let i = 0; i < req.files.length; i++) {
+      const file = req.files[i];
+      const filename = `${Date.now()}-${i}.jpeg`; // only filename
+      const filePath = path.join(__dirname, "../uploads", filename);
+
+      await sharp(file.buffer)
+        .resize(800)
+        .jpeg({ quality: 70 })
+        .toFile(filePath);
+
+      compressedImages.push(filename); // save ONLY filename in DB
+    }
+// Parse sizes from string to object
+const parsedSizes = sizes ? JSON.parse(sizes) : {
+  S: 0, M: 0, L: 0, XL: 0, XXL: 0
+};
+
+const newProduct = new Product({
+  name,
+  description,
+  realPrice,
+  discountPrice,
+  category,
+  gender,
+  sizes: parsedSizes,
+  images: compressedImages,
+  stock,
+});
 
     await newProduct.save();
+
     res.status(201).json({ message: "✅ Product added successfully!", product: newProduct });
   } catch (error) {
     console.error("Error adding product:", error);
@@ -31,13 +65,22 @@ router.post("/add", async (req, res) => {
   }
 });
 
-// 📜 Get All Products
+
+
+
 router.get("/", async (req, res) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20; // fetch 20 products at a time
+
+    const products = await Product.find({}, "name discountPrice images category stock")
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
     res.status(200).json(products);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 });

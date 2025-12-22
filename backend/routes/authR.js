@@ -33,40 +33,35 @@ router.get('/google/callback',
 );
 
 router.post('/signup', async (req, res) => {
+ console.log("Signup request received:", req.body); // S
     try {
         const { name, email, userType, password, phone, address } = req.body;
+ console.log("Validating fields..."); // Step 2
 
         if (!name || !email || !password || !phone || !address || !userType) {
             return res.status(400).json({ message: "Please fill all fields" });
         }
 
         const existingUser = await User.findOne({ email });
+       console.log("Existing user check done"); // Step 3
         if (existingUser) return res.status(403).json({ message: "Email already registered" });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
+console.log("Password hashed"); // Step 
         // Generate OTP
         const otp = generateOTP(6);
-
+ 
         // Send OTP to user's email
-        await sendOTP(email, otp);
+        pendingUsers[email] = { name, email, password: hashedPassword, phone, address, userType, otp, otpExpires: Date.now()+5*60*1000 };
 
-        // Save temporarily
-        pendingUsers[email] = {
-            name,
-            email,
-            password: hashedPassword,
-            phone,
-            address,
-            userType,
-            otp,
-            otpExpires: Date.now() + 5 * 60 * 1000 // 5 min
-        };
+// Send OTP without await
+sendOTP(email, otp).catch(err => console.error("OTP send failed:", err));
+console.log("OTP sent"); 
+res.status(200).json({ message: "OTP sent to your email. Please verify." });
 
-        res.status(200).json({ message: "OTP sent to your email. Please verify." });
 
     } catch (err) {
-        console.error(err);
+      console.error("Signup Error:", err);
         res.status(500).json({ message: "Server Error", error: err.message });
     }
 });

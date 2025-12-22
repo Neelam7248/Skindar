@@ -5,6 +5,7 @@ const mongoose=require('mongoose')//staring time 8  complet with .env at 9 13am
 require ('dotenv').config();
 const Product = require("./models/Products");
 const products = require("./routes/utils/seedProducts");
+const path = require("path");
 
 // Middleware
 app.use(cors({
@@ -12,9 +13,11 @@ app.use(cors({
     "https://denimstudio.netlify.app",
     "http://localhost:3000"
   ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
+
 
 app.use(express.json({ limit: "10mb" })); // increase as needed
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
@@ -31,6 +34,7 @@ app.use(session({
 // Passport initialize
 app.use(passport.initialize());
 app.use(passport.session());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Passport config
 require('./config/passport'); // GoogleStrategy yahan rahegi
