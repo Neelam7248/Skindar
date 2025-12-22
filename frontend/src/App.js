@@ -1,4 +1,5 @@
 import './App.css';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProductPage from './components/customers/Products';
 import CustomerRegister from './components/customers/CustomersRegister';
@@ -50,4 +51,4 @@ function App() {
     </>  );
 }
 
-export default App;
+export default React.memo(App);

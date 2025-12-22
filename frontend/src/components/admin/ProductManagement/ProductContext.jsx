@@ -6,25 +6,61 @@ export const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
-const [loading, setLoading] = useState(false);
-const [error, setError] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState([]); // 🆕 for dropdown
-const [selectedCategoryProducts,setSelectedCategoryProducts]=useState([]);
-const backendURL = process.env.REACT_APP_API_BACKEND_URL; 
-// Fetch products on load
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  const [selectedCategoryProducts, setSelectedCategoryProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-const handleCategorySelect = async (category) => {
+  const [page, setPage] = useState(1); // pagination
+  const [limit] = useState(20); // products per page
+  const backendURL = process.env.REACT_APP_API_BACKEND_URL;
+
+  // Fetch products on load
+  useEffect(() => {
+    fetchProducts(page, limit);
+  }, [page, limit]);
+
+  // Fetch products with pagination & field selection
+  const fetchProducts = async (page = 1, limit = 20) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await axios.get(`${backendURL}/api/products?page=${page}&limit=${limit}`);
+console.log("Fetched products:", res.data);
+// Convert filenames to full URLs
+const productsWithFullURLs = res.data.map(p => ({
+  ...p,
+sizes: p.sizes || { S:"",M:"",L:"",XL:"",XXL:"" },
+  images: p.images?.map(img => `${backendURL}/uploads/${img}`)
+}));
+
+console.log("Fetched products with URLs:", productsWithFullURLs);
+
+setProducts(productsWithFullURLs);
+}catch (err) {
+      console.error("Failed to fetch products", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch products by category (also paginated)
+  // Fetch products by category (also paginated)
+const handleCategorySelect = async (category, page = 1, limit = 20) => {
   setLoading(true);
   setError(null);
   try {
-    const res = await axios.get(`${backendURL}/api/products/byCategory?category=${category}`);
-    console.log("frontend received data", res.data);
+    const res = await axios.get(
+      `${backendURL}/api/products/byCategory?category=${category}&page=${page}&limit=${limit}`
+    );
 
-    setSelectedCategoryProducts(res.data);
-    setSelectedCategory(category);
+    // Map image filenames to full URLs
+    const productsWithFullURLs = res.data.map(p => ({
+      ...p,
+      images: p.images?.map(img => `${backendURL}/uploads/${img}`)
+    }));
+
+    setSelectedCategoryProducts(productsWithFullURLs);
   } catch (err) {
     console.error(err);
     setError(err.response?.data?.message || "Failed to fetch category products");
@@ -34,70 +70,70 @@ const handleCategorySelect = async (category) => {
   }
 };
 
-
-//for fetch Products
-  const fetchProducts = async () => {
-    setLoading(true);
-setError(null);
-    try {
-      const res = await axios.get(`${backendURL}/api/products`);
-     console.log("frontend received data",res.data);
-      setProducts(res.data);
-    } catch (error) {
-      console.error("Failed to fetch products", error);
-   setError(error.message);
-} finally {
-  setLoading(false);
-}}
-
-
-//for add Products
+  // Add product
   const addProduct = async (newProduct) => {
- setLoading(true);
-setError(null);
+    setLoading(true);
+    setError(null);
     try {
       const res = await axios.post(`${backendURL}/api/products/add`, newProduct);
-    console.log("frontend received data", res.data);
-      setProducts(prev => [...prev, res.data]);
-  return res.data; 
-    } catch (error) {
-      console.error("Error adding product:", error);
-    setError(error.message);
-} finally {
-  setLoading(false);
-}
-  }
-  // for edit Products
+      setProducts((prev) => [res.data, ...prev]);
+      return res.data;
+    } catch (err) {
+      console.error("Error adding product:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Edit product
   const editProduct = async (id, updatedProduct) => {
     setLoading(true);
-setError(null);
+    setError(null);
     try {
       const res = await axios.put(`${backendURL}/api/products/${id}`, updatedProduct);
- setProducts(prev => prev.map(p => (p._id === id ? res.data : p)));
-    } catch (error) {
-      console.error("Error updating product:", error);
-       setError(error.message);
-} finally {
-  setLoading(false);
-}}
+      setProducts((prev) =>
+        prev.map((p) => (p._id === id ? res.data : p))
+      );
+    } catch (err) {
+      console.error("Error updating product:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-// for delete 
-const deleteProduct = async (id) => {
-      setLoading(true);
-  setError(null);
-
+  // Delete product
+  const deleteProduct = async (id) => {
+    setLoading(true);
+    setError(null);
     try {
       await axios.delete(`${backendURL}/api/products/${id}`);
-      setProducts(products.filter(p => p._id !== id));
-    } catch (error) {
-      console.error("Error deleting product:", error);
-       setError(error.message);
-} finally {
-  setLoading(false);
-}}
+      setProducts((prev) => prev.filter((p) => p._id !== id));
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <ProductContext.Provider
-      value={{ products, loading, error, selectedCategoryProducts, handleCategorySelect, addProduct, editProduct, deleteProduct,fetchProducts}}
+      value={{
+        products,
+        selectedCategoryProducts,
+        loading,
+        error,
+        fetchProducts,
+        handleCategorySelect,
+        addProduct,
+        editProduct,
+        deleteProduct,
+        page,
+        setPage,
+        limit
+      }}
     >
       {children}
     </ProductContext.Provider>

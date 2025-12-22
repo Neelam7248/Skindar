@@ -1,14 +1,14 @@
-import { useState } from "react";
+import React,{ useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-export default function OTPVerification({ email }) {
+ function OTPVerification({ email }) {
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
 const navigate = useNavigate();
 const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
   const handleVerify = async () => {
     try {
-      const res = await axios.post(`{backendURL}/api/auth/verify-otp`, {
+      const res = await axios.post(`${backendURL}/api/auth/verify-otp`, {
         email,
         otp
       });
@@ -38,3 +38,4 @@ const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:50
     </div>
   );
 }
+export default React.memo(OTPVerification);

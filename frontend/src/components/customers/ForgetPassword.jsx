@@ -1,7 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import "./CustomerRegister.css"; // Use existing register CSS
-export default function ForgotPassword() {
+ function ForgotPassword() {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -126,3 +126,4 @@ const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:50
     </div>
   );
 }
+export default React.memo(ForgotPassword);

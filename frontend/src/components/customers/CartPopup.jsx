@@ -53,4 +53,4 @@ const CartPopup = () => {
   );
 };
 
-export default CartPopup;
+export default React.memo(CartPopup);

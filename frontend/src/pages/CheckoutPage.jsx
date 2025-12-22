@@ -1,5 +1,5 @@
 // src/pages/CheckoutPage.js
-import { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { CartContext } from "../components/customers/CartContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -253,4 +253,4 @@ const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:50
   );
 };
 
-export default CheckoutPage;
+export default React.memo(CheckoutPage);

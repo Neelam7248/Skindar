@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { CustomerContext } from "../CustomerManagement/CustomerContext";
 import "../../customers/Home.css"; // CSS file for styling
-
-export default function CustomerList() {
+ function CustomerList() {
   const {
     customers,
     loading,
@@ -133,3 +132,4 @@ export default function CustomerList() {
     </div>
   );
 }
+export default React.memo(CustomerList);

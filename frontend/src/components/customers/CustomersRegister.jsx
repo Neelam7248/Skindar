@@ -24,8 +24,10 @@ const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:50
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     try {
       await axios.post(`${backendURL}/api/auth/signup`, formData);
+console.log("Sending data:", formData);
 
       // OTP generate ho chuka → show OTP input
       setOtpSent(true);
@@ -67,4 +69,4 @@ const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:50
   );
 }
 
-export default CustomerRegister;
+export default React.memo(CustomerRegister);

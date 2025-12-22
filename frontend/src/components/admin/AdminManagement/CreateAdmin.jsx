@@ -138,4 +138,4 @@ const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:50
   );
 }
 
-export default AdminCreateAdmin;
+export default React.memo(AdminCreateAdmin);

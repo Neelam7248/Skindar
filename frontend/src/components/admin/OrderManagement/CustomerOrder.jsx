@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { OrderContext } from "./OrderContext";
 import UserOrders from "./UserOrder";
 console.log(UserOrders);
-export default function CustomerDetails() {
+ function CustomerDetails() {
   const { fetchUserOrders } = useContext(OrderContext);
   const [email, setEmail] = useState("");
   const [submittedEmail, setSubmittedEmail] = useState("");
@@ -39,3 +39,4 @@ export default function CustomerDetails() {
     </div>
   );
 }
+export default React.memo(CustomerDetails);

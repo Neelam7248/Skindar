@@ -25,7 +25,7 @@ function AddProduct() {
 
   const [message, setMessage] = useState("");
 
-  const categories = ["jackets", "shirts", "t-shirts", "pants","jeans","hoddies","suits","caps"];
+  const categories = ["jackets", "shirts", "t-shirts", "pants","jeans","hoodies","suits","caps"];
   const gender = ["Male"];
 
   const handleChange = (e) => {
@@ -40,68 +40,62 @@ function AddProduct() {
 };
 
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    const imageArray = [];
+  setFormData({
+    ...formData,
+    images: e.target.files, // FileList (real files)
+  });
+};
 
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        imageArray.push(reader.result);
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-        if (imageArray.length === files.length) {
-          setFormData((prev) => ({
-            ...prev,
-            images: imageArray,
-          }));
-        }
-      };
-      reader.readAsDataURL(file);
-    });
-  };
+  if (
+    !formData.name ||
+    !formData.realPrice ||
+    !formData.discountPrice ||
+    !formData.category ||
+    !formData.description ||
+    !formData.gender ||
+    !formData.images.length
+  ) {
+    setMessage("⚠️ Please fill all required fields");
+    return;
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const data = new FormData();
 
-    // Required validation
-    if (
-      !formData.name ||
-      !formData.realPrice ||
-      !formData.discountPrice ||
-      !formData.category ||
-      !formData.description ||
-      !formData.gender ||
-      !formData.images.length
-    ) {
-      setMessage("⚠️ Please fill all required fields");
-      return;
-    }
+  data.append("name", formData.name);
+  data.append("realPrice", formData.realPrice);
+  data.append("discountPrice", formData.discountPrice);
+  data.append("category", formData.category);
+  data.append("description", formData.description);
+  data.append("gender", formData.gender);
+  data.append("stock", formData.stock);
+  data.append("sizes", JSON.stringify(formData.sizes));
 
-    // Add product to context / backend
-    addProduct(formData);
+  for (let i = 0; i < formData.images.length; i++) {
+    data.append("images", formData.images[i]);
+  }
 
-    setMessage("✅ Product added successfully!");
+  addProduct(data);
 
-    // Reset form after submission
-    setFormData({
-      name: "",
-      realPrice: "",
-      discountPrice: "",
-      category: "",
-      description: "",
-      gender: "",
-      images: [],
-      stock: "",
-      sizes: {
-        S: 0,
-        M: 0,
-        L: 0,
-        XL: 0,
-        XXL: 0,
-      },
-    });
+  setMessage("✅ Product added successfully!");
 
-    setTimeout(() => setMessage(""), 2000);
-  };
+  // ✅ RESET FORM (andar hi hona chahiye)
+  setFormData({
+    name: "",
+    realPrice: "",
+    discountPrice: "",
+    category: "",
+    description: "",
+    gender: "",
+    images: [],
+    stock: "",
+    sizes: { S: 0, M: 0, L: 0, XL: 0, XXL: 0 },
+  });
+
+  setTimeout(() => setMessage(""), 2000);
+};
 
   return (
     <div className="register-page">
@@ -199,33 +193,24 @@ function AddProduct() {
 
           {/* Images */}
           <input type="file" accept="image/*" multiple onChange={handleImageChange} />
-
-          {formData.images.length > 0 && (
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "10px",
-                marginTop: "10px",
-              }}
-            >
-              {formData.images.map((img, index) => (
-                <img
-                  key={index}
-                  src={img}
-                  alt="preview"
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    objectFit: "cover",
-                    borderRadius: "5px",
-                    border: "1px solid #ccc",
-                  }}
-                />
-              ))}
-            </div>
-          )}
-
+{formData.images.length > 0 && (
+  <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+    {Array.from(formData.images).map((file, index) => (
+      <img
+        key={index}
+        src={URL.createObjectURL(file)}
+        alt="preview"
+        style={{
+          width: "80px",
+          height: "80px",
+          objectFit: "cover",
+          border: "1px solid #ccc",
+        }}
+      />
+    ))}
+  </div>
+)}
+         
           {/* Stock */}
           <input
             type="number"

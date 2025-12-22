@@ -12,7 +12,7 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(1,10);
   }, []);
 
   const featuredProducts = products.slice(0, 10);
@@ -39,27 +39,36 @@ function Home() {
         ) : (
           <div className="product-grid">
             {featuredProducts.map((product) => (
-              <div key={product._id} className="product-card">
-                <img src={product.images[0]} alt={product.name} />
-                <h6>{product.name}</h6>
-                <p>
-                  <del className="product-price">{product.realPrice || "NA"}</del><br/>
-                  <ins className="product-price">Rs {product.discountPrice}</ins>
-                </p>
-                <div>
-                  <Link to={`/productpage/${product._id}`} className="btn-view">
-                    View
-                  </Link>
-                  <button
-                    className="btn-shop"
-                    onClick={() => addToCart(product)}
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+  <div key={product._id} className="product-card">
+    <img
+  src={
+    product.images && product.images.length > 0
+      ? product.images[0]
+      : "/Imageplaceholder.png"
+  }
+  alt={product.name || "Product Image"}
+  width={150}
+/>
+<h6>{product.name}</h6>
+    <p>
+      <del className="product-price">{product.realPrice || "NA"}</del><br/>
+      <ins className="product-price">Rs {product.discountPrice}</ins>
+    </p>
+    <div>
+      <Link to={`/productpage/${product._id}`} className="btn-view">
+        View
+      </Link>
+      <button
+        className="btn-shop"
+        onClick={() => addToCart(product)}
+      >
+        Add to Cart
+      </button>
+    </div>
+  </div>
+))}
+
+</div>
         )}
       </section>
 
@@ -69,8 +78,16 @@ function Home() {
           <div className="cart-popup">
             <h4>Added to Cart!</h4>
             <div className="cart-popup-item">
-              <img src={latestItem.images[0]} alt={latestItem.name} />
-                <div className="cart-popup-buttons button">
+              <img
+  src={
+    latestItem.images && latestItem.images.length > 0
+      ? latestItem.images[0]
+      : "/Imageplaceholder.png"
+  }
+  alt={latestItem.name}
+  width={100}
+/>
+  <div className="cart-popup-buttons button">
             
                 <p>{latestItem.name}</p>
                 <p>Rs {latestItem.realPrice}</p>

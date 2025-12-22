@@ -18,33 +18,44 @@ function CartPage() {
   } = useContext(CartContext);
 
   const navigate = useNavigate();
+
   return (
     <div className="cart-page">
       <h2>Your Cart</h2>
 
       {cartItems.length === 0 ? (
-        <>        <p className="empty-text">No items yet.</p>
-        {/* Footer */}
-      <footer>
-        <address>
-          Address: Shop no 1, United Plaza, nearest Levis factory outlet
-        </address>
-        <p>Sikandar Javeid</p>
-        <p>Contact No:0323-6667743</p>
-      </footer></>
-
+        <>
+          <p className="empty-text">No items yet.</p>
+          <footer>
+            <address>
+              Address: Shop no 1, United Plaza, nearest Levis factory outlet
+            </address>
+            <p>Sikandar Javeid</p>
+            <p>Contact No: 0323-6667743</p>
+          </footer>
+        </>
       ) : (
         <>
           {/* PRODUCT GRID */}
           <div className="product-grid">
             {cartItems.map((item) => (
               <div key={item._id} className="product-card">
-                
                 {/* IMAGE */}
-                {item.images && item.images.length > 0 && (
+                {item.images && item.images.length > 0 ? (
                   <img
-                    src={item.images[0]}
+                    src={
+                      item.images[0].startsWith("http") ||
+                      item.images[0].startsWith("/uploads")
+                        ? item.images[0]
+                        : `/uploads/${item.images[0]}`
+                    }
                     alt={item.name}
+                    className="product-img"
+                  />
+                ) : (
+                  <img
+                    src="/Imageplaceholder.png"
+                    alt="Placeholder"
                     className="product-img"
                   />
                 )}
@@ -55,26 +66,39 @@ function CartPage() {
 
                 {/* QUANTITY BUTTONS */}
                 <div className="qty-box">
-                  <button className="qty-btn" onClick={() => decreaseQty(item._id)}>-</button>
+                  <button
+                    className="qty-btn"
+                    onClick={() => decreaseQty(item._id)}
+                  >
+                    -
+                  </button>
                   <span className="qty-value">{item.quantity}</span>
-                  <button className="qty-btn" onClick={() => increaseQty(item._id)}>+</button>
+                  <button
+                    className="qty-btn"
+                    onClick={() => increaseQty(item._id)}
+                  >
+                    +
+                  </button>
                 </div>
-<select
-  value={selectedSizes[item._id] || ""}
-  onChange={(e) => updateSelectedSize(item._id, e.target.value)}
-  required
->
-  <option value="">Size select </option>
-  {Object.keys(item.sizes).map((size) => (
-    <option key={size} value={size}>
-      {size} ({item.sizes[size]} in stock)
-    </option>
-  ))}
-</select>
 
+                {/* SIZE SELECT */}
+                <select
+                  value={selectedSizes[item._id] || ""}
+                  onChange={(e) => updateSelectedSize(item._id, e.target.value)}
+                  required
+                >
+                  <option value="">Select Size</option>
+                  {item.sizes &&
+                    Object.keys(item.sizes).map((size) => (
+                      <option key={size} value={size}>
+                        {size} ({item.sizes[size]} in stock)
+                      </option>
+                    ))}
+                </select>
 
-
-                <p className="subtotal">Subtotal: Rs {item.discountPrice * item.quantity}</p>
+                <p className="subtotal">
+                  Subtotal: Rs {item.discountPrice * item.quantity}
+                </p>
 
                 {/* REMOVE BUTTON */}
                 <button
@@ -120,12 +144,8 @@ function CartPage() {
             </button>
           </div>
         </>
-        
-      )
-      }
-      
+      )}
     </div>
-    
   );
 }
 

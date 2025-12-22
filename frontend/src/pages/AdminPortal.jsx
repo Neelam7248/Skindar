@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React,{ useState } from "react";
 import ProductManagement from "../components/admin/ProductManagement/ProductManagement";
 import OrderManagement from "../components/admin/OrderManagement/OrderManagement";
 import CustomerManagement from "../components/admin/CustomerManagement/CustomerManagement";
@@ -154,4 +154,4 @@ const styles = {
   },
 };
 
-export default AdminPortal;
+export default React.memo(AdminPortal);

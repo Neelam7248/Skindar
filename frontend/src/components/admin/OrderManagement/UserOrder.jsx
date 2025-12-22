@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { OrderContext } from "./OrderContext";
 import "../../customers/Home.css"; // Separate CSS
 
-export default function UserOrders({ email }) {
+ function UserOrders({ email }) {
   const { orders, updateOrderStatus, fetchUserOrders } = useContext(OrderContext);
   const [selectedStatus, setSelectedStatus] = useState({});
 
@@ -70,3 +70,4 @@ export default function UserOrders({ email }) {
     </div>
   );
 }
+export default React.memo(UserOrders);
