@@ -7,22 +7,15 @@ const Product = require("./models/Products");
 const products = require("./routes/utils/seedProducts");
 const path = require("path");
 
-// Middleware
-const corsOptions = {
+const cors = require("cors");
+
+app.use(cors({
   origin: [
-    "https://denimstudio.netlify.app",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://denimstudio.netlify.app"
   ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
-};
-
-// Global CORS middleware
-app.use(cors(corsOptions));
-
-// Preflight handling for all routes
-app.options('*', cors(corsOptions));
+}));
 
 
 app.use(express.json({ limit: "10mb" })); // increase as needed
