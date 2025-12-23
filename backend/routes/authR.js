@@ -191,7 +191,18 @@ router.post('/reset-password', async (req, res) => {
 
   res.status(200).json({ message: "Password reset successfully" });
 });
-
+// GET /api/auth/users
+router.get("/users", async (req, res) => {
+  try {
+    const users = await User.find({});
+    if (!users || users.length === 0) {
+      return res.json({ message: "No users found" });
+    }
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 /*router.post('/signup', async (req, res) => {
     try {
