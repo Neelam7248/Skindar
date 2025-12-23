@@ -7,7 +7,7 @@ const Product = require("./models/Products");
 const products = require("./routes/utils/seedProducts");
 const path = require("path");
 
-const cors = require("cors");
+
 
 app.use(cors({
   origin: [
