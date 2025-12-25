@@ -29,9 +29,9 @@ console.log("Fetched products:", res.data);
 // Convert filenames to full URLs
 const productsWithFullURLs = res.data.map(p => ({
   ...p,
-sizes: p.sizes || { S:"",M:"",L:"",XL:"",XXL:"" },
-  images: p.images?.map(img => `${backendURL}/uploads/${img}`)
+  images: p.images || []
 }));
+//changed accordingly with cloudinary setup
 
 console.log("Fetched products with URLs:", productsWithFullURLs);
 
@@ -54,10 +54,9 @@ const handleCategorySelect = async (category, page = 1, limit = 20) => {
       `${backendURL}/api/products/byCategory?category=${category}&page=${page}&limit=${limit}`
     );
 
-    // Map image filenames to full URLs
     const productsWithFullURLs = res.data.map(p => ({
       ...p,
-      images: p.images?.map(img => `${backendURL}/uploads/${img}`)
+      images: p.images || []   // ✅ Cloudinary URLs 그대로
     }));
 
     setSelectedCategoryProducts(productsWithFullURLs);

@@ -22,8 +22,7 @@ const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:50
       });
 
       saveAuthData(res.data.token, res.data.user);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("userType", res.data.user.userType);
+      
 
       if (res.data.user.userType === "customer") navigate(from);
       else if (res.data.user.userType === "admin") navigate("/adminportal");

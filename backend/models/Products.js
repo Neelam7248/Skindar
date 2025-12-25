@@ -39,9 +39,18 @@ const productSchema = new mongoose.Schema(
       XXL: { type: Number, default: 0 },
     },
 
-    color: {
-      type: [String], // Example: ["Red", "Blue", "Black"]
-      default: [],
+   colors: {
+    selectedProduct: { type: Number, default: 0 },
+      Red: { type: Number, default: 0 },
+      Blue: { type: Number, default: 0 },
+      Green: { type: Number, default: 0 },
+      Black: { type: Number, default: 0 },
+      White: { type: Number, default: 0 },
+      Yellow: { type: Number, default: 0 },
+      Purple: { type: Number, default: 0 },
+      Orange: { type: Number, default: 0 },
+      Brown: { type: Number, default: 0 },
+      Gray: { type: Number, default: 0 },
     },
     images: {
       type: [String], // array of image URLs

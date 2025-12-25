@@ -20,11 +20,13 @@ function AddProduct() {
       L: 0,
       XL: 0,
       XXL: 0,
+      
     },
+    colors:{Red:0,Blue:0,Green:0,Black:0,White:0,Yellow:0,Purple:0,Orange:0,Brown:0,Gray:0},
   });
 
   const [message, setMessage] = useState("");
-
+const colors = ["SelectedProduct","Red","Blue","Green","Black","White","Yellow","Purple","Orange","Brown","Gray"];
   const categories = ["jackets", "shirts", "t-shirts", "pants","jeans","hoodies","suits","caps"];
   const gender = ["Male"];
 
@@ -43,6 +45,12 @@ function AddProduct() {
   setFormData({
     ...formData,
     images: e.target.files, // FileList (real files)
+  });
+};
+const handleColorChange = (color, value) => {
+  setFormData({
+    ...formData,
+    colors: { ...formData.colors, [color]: Number(value) },
   });
 };
 
@@ -72,6 +80,7 @@ const handleSubmit = (e) => {
   data.append("gender", formData.gender);
   data.append("stock", formData.stock);
   data.append("sizes", JSON.stringify(formData.sizes));
+data.append("colors", JSON.stringify(formData.colors));
 
   for (let i = 0; i < formData.images.length; i++) {
     data.append("images", formData.images[i]);
@@ -92,6 +101,7 @@ const handleSubmit = (e) => {
     images: [],
     stock: "",
     sizes: { S: 0, M: 0, L: 0, XL: 0, XXL: 0 },
+    colors:{SelectedProduct:0,Red:0,Blue:0,Green:0,Black:0,White:0,Yellow:0,Purple:0,Orange:0,Brown:0,Gray:0}
   });
 
   setTimeout(() => setMessage(""), 2000);
@@ -184,6 +194,24 @@ const handleSubmit = (e) => {
           min="0"
           value={formData.sizes[s]}
           onChange={(e) => handleSizeChange(s, e.target.value)}
+          style={{ width: "60px", textAlign: "center" }}
+        />
+      </div>
+    ))}
+  </div>
+</div>
+
+<div>
+  <label>Quantity by Color:</label>
+  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "5px" }}>
+    {colors.map((c) => (
+      <div key={c} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <span>{c}</span>
+        <input
+          type="number"
+          min="0"
+          value={formData.colors[c]}
+          onChange={(e) => handleColorChange(c, e.target.value)}
           style={{ width: "60px", textAlign: "center" }}
         />
       </div>

@@ -15,6 +15,9 @@ function CartPage() {
     clearCart,
     selectedSizes,
     updateSelectedSize,
+    selectedColors,
+updateSelectedColor,
+
   } = useContext(CartContext);
 
   const navigate = useNavigate();
@@ -80,21 +83,33 @@ function CartPage() {
                     +
                   </button>
                 </div>
-
-                {/* SIZE SELECT */}
-                <select
-                  value={selectedSizes[item._id] || ""}
-                  onChange={(e) => updateSelectedSize(item._id, e.target.value)}
-                  required
-                >
-                  <option value="">Select Size</option>
-                  {item.sizes &&
-                    Object.keys(item.sizes).map((size) => (
-                      <option key={size} value={size}>
-                        {size} ({item.sizes[size]} in stock)
-                      </option>
-                    ))}
-                </select>
+{/* SIZE SELECT */}
+<select
+    value={selectedSizes[item._id] || ""}
+    onChange={(e) => updateSelectedSize(item._id, e.target.value)}
+    required
+  >
+    <option value="">Select Size</option>
+    {item.sizes &&
+      Object.entries(item.sizes).map(([size, stock]) => (
+        <option key={size} value={size} disabled={stock <= 0}>
+          {size} ({stock} in stock)
+        </option>
+      ))}
+  </select>
+<select
+  value={selectedColors[item._id] || ""}
+  onChange={(e) =>
+    updateSelectedColor(item._id, e.target.value)
+  }
+>
+  <option value="">Select Color</option>
+  {Object.keys(item.colors).map((color) => (
+    <option key={color} value={color}>
+      {color}
+    </option>
+  ))}
+</select>
 
                 <p className="subtotal">
                   Subtotal: Rs {item.discountPrice * item.quantity}

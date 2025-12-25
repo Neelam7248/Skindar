@@ -2,22 +2,32 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/Products");
 const multer = require("multer");
-const sharp = require("sharp");
-const path = require("path");
+const cloudinary = require("../config/cloudinary");
 
-// Configure multer storage
-const storage = multer.memoryStorage(); // store files in memory
+// Configure multer storage (memory storage for Cloudinary)
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Serve uploads folder statically in your main server file
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Helper function to upload buffer to Cloudinary
+const uploadToCloudinary = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "products" },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result.secure_url); // Cloud URL
+      }
+    );
+    stream.end(fileBuffer);
+  });
+};
 
-// Add Product with image upload
+// Add Product route
 router.post("/add", upload.array("images", 5), async (req, res) => {
   try {
-    const { name, description, realPrice, discountPrice, category, gender, sizes, stock } = req.body;
+    const { name, description, realPrice, discountPrice, category, gender, sizes, colors, stock } = req.body;
 
-    if (!name || !description || !realPrice || !discountPrice || !category || !gender || !sizes) {
+    if (!name || !description || !realPrice || !discountPrice || !category || !gender || !sizes|| !colors) {
       return res.status(400).json({ message: "Please fill all required fields." });
     }
 
@@ -25,36 +35,28 @@ router.post("/add", upload.array("images", 5), async (req, res) => {
       return res.status(400).json({ message: "No images uploaded" });
     }
 
-    // Process & compress images
-    const compressedImages = [];
-    for (let i = 0; i < req.files.length; i++) {
-      const file = req.files[i];
-      const filename = `${Date.now()}-${i}.jpeg`; // only filename
-      const filePath = path.join(__dirname, "../uploads", filename);
-
-      await sharp(file.buffer)
-        .resize(800)
-        .jpeg({ quality: 70 })
-        .toFile(filePath);
-
-      compressedImages.push(filename); // save ONLY filename in DB
+    // Upload images to Cloudinary
+    const uploadedImages = [];
+    for (const file of req.files) {
+      const url = await uploadToCloudinary(file.buffer);
+      uploadedImages.push(url);
     }
-// Parse sizes from string to object
-const parsedSizes = sizes ? JSON.parse(sizes) : {
-  S: 0, M: 0, L: 0, XL: 0, XXL: 0
-};
 
-const newProduct = new Product({
-  name,
-  description,
-  realPrice,
-  discountPrice,
-  category,
-  gender,
-  sizes: parsedSizes,
-  images: compressedImages,
-  stock,
-});
+    // Parse sizes
+    const parsedSizes = sizes ? JSON.parse(sizes) : { S: 0, M: 0, L: 0, XL: 0, XXL: 0 };
+const parsedColors = colors ? JSON.parse(colors) : { SelectedProduct:0,Red:0,Blue:0,Green:0,Black:0,White:0,Yellow:0,Purple:0,Orange:0,Brown:0,Gray:0};
+    const newProduct = new Product({
+      name,
+      description,
+      realPrice,
+      discountPrice,
+      category,
+      gender,
+      sizes: parsedSizes,
+      images: uploadedImages,
+      colors: parsedColors,
+      stock,
+    });
 
     await newProduct.save();
 
@@ -73,7 +75,7 @@ router.get("/", async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20; // fetch 20 products at a time
 
-    const products = await Product.find({}, "name discountPrice images category stock")
+    const products = await Product.find({}, "name realPrice discountPrice images sizes colors category stock")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);

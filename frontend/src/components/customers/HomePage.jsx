@@ -51,7 +51,7 @@ function Home() {
 />
 <h6>{product.name}</h6>
     <p>
-      <del className="product-price">{product.realPrice || "NA"}</del><br/>
+      <del className="product-price">RS{product.realPrice}</del><br/>
       <ins className="product-price">Rs {product.discountPrice}</ins>
     </p>
     <div>

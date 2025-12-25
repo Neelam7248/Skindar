@@ -33,7 +33,17 @@ const OrderHistory = () => {
               <ul>
                 {order.items.map((item, idx) => (
                   <li key={idx}>
-                    {item.name} - Qty: {item.quantity} - Price: {item.price}- Size: {item.selectedSize}
+                    {item.images && item.images.length > 0 ? (
+                      <img
+                        src={item.images[0]}
+                        alt={item.name}
+                        style={{ width: "50px", height: "50px", objectFit: "cover", marginRight: "10px" }}
+                      />
+                    ) : (
+                      <div  style={{ width: "50px", height: "50px", backgroundColor: "#ccc", display: "inline-block", marginRight: "10px" }}></div>
+                    )}
+
+                    {item.name} - Qty: {item.quantity} - Price: {item.price}- Size: {item.selectedSize} - Color: {item.selectedColor}
                   </li>
                 ))}
               </ul>

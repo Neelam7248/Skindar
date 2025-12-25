@@ -1,7 +1,7 @@
 // src/context/CartContext.js
 import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { isLoggedIn, getToken,logout } from "../../utils/auth";   // ← IMPORT HERE
+import { isLoggedIn, getToken,logout,isSessionExpired } from "../../utils/auth";   // ← IMPORT HERE
 import axios from "axios";
 export const CartContext = createContext();
 
@@ -12,7 +12,9 @@ export const CartProvider = ({ children }) => {
   const [profileError, setProfileError] = useState("");
   const [adminContacts, setAdminContacts] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState({}); // productId -> size
-const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
+const [selectedColors, setSelectedColors] = useState({});
+
+  const backendURL = process.env.REACT_APP_API_BACKEND_URL || "http://localhost:5000";
   const navigate = useNavigate();
 const [orders, setOrders] = useState([]);
   // ➕ Add to Cart
@@ -86,28 +88,55 @@ const fetchOrders = async () => {
   };
   
   const buyNowAll = () => {
+  // 1️⃣ Cart empty check
   if (cartItems.length === 0) {
     alert("Your cart is empty!");
     return;
-    
-  } else if (!isLoggedIn()) {
-    setTimeout(() => navigate("/signin"), 10);
+  }
+
+  // 2️⃣ Login check
+  if (!isLoggedIn()) {
+    alert("Please login first");
+    navigate("/signin");
     return;
   }
-for (let item of cartItems) {
+
+  // 3️⃣ Session expired check (30 minutes)
+  if (isSessionExpired()) {
+    alert("Your session has expired. Please login again.");
+
+    // clear auth data
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("loginTime");
+
+    navigate("/signin");
+    return;
+  }
+// 4️⃣ Color selection check
+  for (let item of cartItems) {
+  if (!selectedColors[item._id]) {
+    alert(`Please select a color for ${item.name}`);
+    return;
+  }
+}
+
+  // 4️⃣ Size selection check
+  for (let item of cartItems) {
     if (!selectedSizes[item._id]) {
       alert(`Please select a size for ${item.name}`);
       return;
     }
   }
-  // Attach selected sizes to cartItems
-  const itemsWithSizes = cartItems.map((item) => ({
-    ...item,
-    selectedSize: selectedSizes[item._id] || null,
-  }));
 
-  // Save to context for checkout page
-  setCartItems(itemsWithSizes); // optional if cartItems are already in context
+  // 5️⃣ Attach selected sizes
+  const itemsWithSelections = cartItems.map((item) => ({
+  ...item,
+  selectedSize: selectedSizes[item._id] || null,
+  selectedColor: selectedColors[item._id] || null,
+}));
+
+  setCartItems(itemsWithSelections);
   navigate("/checkout");
 };
 
@@ -228,7 +257,14 @@ const updateSelectedSize = (productId, size) => {
     [productId]: size,
   }));
 };
-
+//helper function to update selected color
+const updateSelectedColor = (productId, color) => {
+  setSelectedColors((prev) => ({
+    ...prev,
+    [productId]: color,
+  }));
+};
+//
 
   return (
     <CartContext.Provider
@@ -257,6 +293,9 @@ const updateSelectedSize = (productId, size) => {
 setAdminContacts, 
 updateSelectedSize,
         selectedSizes,
+        selectedColors,
+updateSelectedColor,
+
       }}
     >
       {children}
