@@ -1,27 +1,25 @@
-// src/utils/auth.js
-
 // Save token and user info
 export const saveAuthData = (token, user) => {
-  localStorage.setItem('token', token);
-  localStorage.setItem('user', JSON.stringify(user));
-   // ⏰ save login time
-  localStorage.setItem("loginTime", Date.now());
+  sessionStorage.setItem('token', token);
+  sessionStorage.setItem('user', JSON.stringify(user));
+  // ⏰ save login time
+  sessionStorage.setItem("loginTime", Date.now());
 };
 
 // Get token
 export const getToken = () => {
-  return localStorage.getItem('token');
+  return sessionStorage.getItem('token');
 };
 
 // Get user info
 export const getUser = () => {
-  const user = localStorage.getItem('user');
+  const user = sessionStorage.getItem('user');
   return user ? JSON.parse(user) : null;
 };
 
 // Check if user is logged in
 export const isLoggedIn = () => {
-  return !!localStorage.getItem('token');
+  return !!sessionStorage.getItem('token');
 };
 
 // Check if current user is admin
@@ -31,16 +29,15 @@ export const isAdmin = () => {
 };
 
 // Logout (clear all auth data)
-
 export const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
-  localStorage.removeItem("loginTime");
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("user");
+  sessionStorage.removeItem("loginTime");
 };
 
 // Check if 30-minute session expired
 export const isSessionExpired = () => {
-  const loginTime = localStorage.getItem("loginTime");
+  const loginTime = sessionStorage.getItem("loginTime");
   if (!loginTime) return true;
 
   const THIRTY_MINUTES = 30 * 60 * 1000; // 30 min
