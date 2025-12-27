@@ -26,6 +26,7 @@ function Home() {
       <section className="hero">
         <h1><i>Denim Studio</i></h1>
         <p>Discover the latest trends in men’s fashion</p>
+        <p>Men track suits, hoodies for men, caps, jeans, jackets, men's fashion, online shopping</p>
       </section>
 
       {/* Featured Products */}
